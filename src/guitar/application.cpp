@@ -5,21 +5,14 @@
 #include <imgui/imgui.h>
 #include <iostream>
 
-guitar::Application::Application(const std::filesystem::path &root)
-    : m_Resources(root)
+guitar::Application::Application(const std::filesystem::path& executable)
+    : m_Resources(executable)
 {
 }
 
 bool guitar::Application::Launch()
 {
-    if (Init())
-        return true;
-    if (Loop())
-        return true;
-    if (Destroy())
-        return true;
-
-    return true;
+    return Init() && Loop() && Destroy();
 }
 
 void guitar::Application::Close()
@@ -29,50 +22,52 @@ void guitar::Application::Close()
 
 void guitar::Application::OnKey(int key, int scancode, int action, int mods)
 {
-    for (auto &callback : m_KeyCallbacks)
+    for (auto& callback : m_KeyCallbacks)
         callback(key, scancode, action, mods);
 }
 
 void guitar::Application::OnSize(int width, int height)
 {
-    for (auto &callback : m_SizeCallbacks)
+    for (auto& callback : m_SizeCallbacks)
         callback(width, height);
 }
 
-static void glfw_error_callback(int error_code, const char *description)
+static void glfw_error_callback(int error_code, const char* description)
 {
     std::cerr << "[GLFW 0x" << std::hex << error_code << std::dec << "] " << description << std::endl;
 }
 
-void guitar::Application::Register(KeyCallback callback)
+void guitar::Application::Register(const KeyCallback& callback)
 {
     m_KeyCallbacks.push_back(callback);
 }
 
-void guitar::Application::Register(SizeCallback callback)
+void guitar::Application::Register(const SizeCallback& callback)
 {
     m_SizeCallbacks.push_back(callback);
 }
 
-static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+static void glfw_key_callback(GLFWwindow* window, const int key, const int scancode, const int action, const int mods)
 {
-    auto &app = *((guitar::Application *)glfwGetWindowUserPointer(window));
+    auto& app = *static_cast<guitar::Application*>(glfwGetWindowUserPointer(window));
     app.OnKey(key, scancode, action, mods);
 }
 
-static void glfw_size_callback(GLFWwindow *window, int width, int height)
+static void glfw_size_callback(GLFWwindow* window, const int width, const int height)
 {
-    auto &app = *((guitar::Application *)glfwGetWindowUserPointer(window));
+    auto& app = *static_cast<guitar::Application*>(glfwGetWindowUserPointer(window));
     app.OnSize(width, height);
 }
 
 bool guitar::Application::Init()
 {
+    m_Resources.Index();
+
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
     {
         std::cerr << "[GUItar] Failed to init glfw" << std::endl;
-        return true;
+        return false;
     }
 
     AppConfig config;
@@ -91,7 +86,7 @@ bool guitar::Application::Init()
     if (!m_Handle)
     {
         std::cerr << "[GUItar] Failed to create glfw window" << std::endl;
-        return true;
+        return false;
     }
 
     glfwSetWindowUserPointer(m_Handle, this);
@@ -101,16 +96,16 @@ bool guitar::Application::Init()
     glfwMakeContextCurrent(m_Handle);
     glfwSwapInterval(1);
 
-    if (int err = glewInit())
+    if (const auto err = glewInit())
     {
-        auto msg = glewGetErrorString(err);
+        const auto msg = glewGetErrorString(err);
         std::cerr << "[GLEW 0x" << std::hex << err << std::dec << "] " << msg << std::endl;
         std::cerr << "[GUItar] Failed to init glew" << std::endl;
-        return true;
+        return false;
     }
 
     ImGui::CreateContext();
-    auto &io = ImGui::GetIO();
+    auto& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -120,7 +115,7 @@ bool guitar::Application::Init()
     ImGui_ImplOpenGL3_Init();
     ImGui_ImplGlfw_InitForOpenGL(m_Handle, true);
 
-    return 0;
+    return true;
 }
 
 bool guitar::Application::Loop()
@@ -155,7 +150,7 @@ bool guitar::Application::Loop()
 
     OnStop();
 
-    return 0;
+    return true;
 }
 
 bool guitar::Application::Destroy()
@@ -170,5 +165,5 @@ bool guitar::Application::Destroy()
     m_Handle = nullptr;
     glfwTerminate();
 
-    return 0;
+    return true;
 }

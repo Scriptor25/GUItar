@@ -12,11 +12,17 @@ namespace guitar
     class Resources
     {
     public:
-        Resources(const std::filesystem::path &root);
+        explicit Resources(const std::filesystem::path& executable);
         ~Resources();
 
-        void CheckErrors();
-        std::ifstream Open(const std::string &name);
+        void CheckErrors() const;
+
+        [[nodiscard]]
+        std::ifstream Open(const std::string& name) const;
+
+        void Index();
+        void IndexDirectory(const std::filesystem::path& path);
+        void IndexFile(const std::filesystem::path& path);
 
     private:
         std::filesystem::path m_Root;

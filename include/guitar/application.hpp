@@ -16,7 +16,7 @@ namespace guitar
     class Application
     {
     public:
-        Application(const std::filesystem::path &root);
+        explicit Application(const std::filesystem::path& executable);
         virtual ~Application() = default;
 
         bool Launch();
@@ -26,28 +26,28 @@ namespace guitar
         void OnSize(int width, int height);
 
     protected:
-        virtual void OnInit(AppConfig &config) = 0;
+        virtual void OnInit(AppConfig& config) = 0;
         virtual void OnStart() = 0;
         virtual void OnImGui() = 0;
         virtual void OnStop() = 0;
         virtual void OnDestroy() = 0;
 
-        void Register(KeyCallback callback);
-        void Register(SizeCallback callback);
+        void Register(const KeyCallback& callback);
+        void Register(const SizeCallback& callback);
 
-        void UseLayout(const std::string &id);
+        void UseLayout(const std::string& id);
 
     private:
         bool Init();
         bool Loop();
         bool Destroy();
 
-        GLFWwindow *m_Handle = nullptr;
+        GLFWwindow* m_Handle = nullptr;
         std::vector<KeyCallback> m_KeyCallbacks;
         std::vector<SizeCallback> m_SizeCallbacks;
 
         Resources m_Resources;
-        Layout *m_Layout = nullptr;
+        Layout* m_Layout = nullptr;
     };
 
     struct AppConfig
