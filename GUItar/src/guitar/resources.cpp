@@ -49,7 +49,7 @@ void guitar::Resources::IndexFile(const std::filesystem::path& path)
 
     std::cout << path << std::endl;
     tinyxml2::XMLDocument doc;
-    doc.LoadFile(path.c_str());
+    doc.LoadFile(path.string().c_str());
 
     const auto root = doc.RootElement();
 
