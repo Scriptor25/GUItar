@@ -4,4 +4,4 @@
 	branch = latest
 [submodule "GLEW"]
 	path = GLEW
-	url = https://github.com/nigels-com/glew.git
+	url = https://github.com/Perlmint/glew-cmake.git
