@@ -1,3 +1,8 @@
+find_package(GLEW REQUIRED)
+find_package(OpenGL REQUIRED)
+
+set(GLEW_STATIC 1)
+
 file(GLOB_RECURSE guitar_src "src/**.c" "src/**.cpp" "include/**.h" "include/**.hpp")
 
 add_library(GUItar ${guitar_src})
