@@ -11,5 +11,6 @@ find_package(OpenGL REQUIRED)
 
 set(GLEW_STATIC 1)
 
+add_subdirectory(GLFW)
 add_subdirectory(GUItar)
 add_subdirectory(Test)
