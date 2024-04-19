@@ -1,4 +1,3 @@
-find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 
 set(GLEW_STATIC 1)
