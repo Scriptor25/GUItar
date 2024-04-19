@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(GLEW_USE_STATIC_LIBS)
 add_subdirectory(GLEW/build/cmake)
+set(GLFW_LIBRARY_TYPE "STATIC")
 add_subdirectory(GLFW)
 add_subdirectory(GUItar)
 add_subdirectory(Test)
