@@ -2,10 +2,12 @@
 
 #include <filesystem>
 #include <fstream>
-#include <guitar/guitar.hpp>
-#include <guitar/layout.hpp>
+#include <map>
 #include <string>
-#include <vector>
+
+#include <guitar/layout.hpp>
+
+#include <tinyxml2/tinyxml2.h>
 
 namespace guitar
 {
@@ -24,9 +26,13 @@ namespace guitar
         void IndexDirectory(const std::filesystem::path& path);
         void IndexFile(const std::filesystem::path& path);
 
+        void ParseLayout(const tinyxml2::XMLElement* xml);
+
+        Layout* GetLayout(const std::string& id);
+
     private:
         std::filesystem::path m_Root;
 
-        std::vector<Layout> m_Layouts;
+        std::map<std::string, Layout> m_Layouts;
     };
 }

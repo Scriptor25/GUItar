@@ -1,12 +1,13 @@
 #pragma once
 
-#define GLFW_INCLUDE_NONE
-
 #include <functional>
+#include <string>
+
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+
 #include <guitar/guitar.hpp>
 #include <guitar/resources.hpp>
-#include <string>
 
 namespace guitar
 {
@@ -26,11 +27,11 @@ namespace guitar
         void OnSize(int width, int height);
 
     protected:
-        virtual void OnInit(AppConfig& config) = 0;
-        virtual void OnStart() = 0;
-        virtual void OnImGui() = 0;
-        virtual void OnStop() = 0;
-        virtual void OnDestroy() = 0;
+        virtual void OnInit(AppConfig& config);
+        virtual void OnStart();
+        virtual void OnImGui();
+        virtual void OnStop();
+        virtual void OnDestroy();
 
         void Register(const KeyCallback& callback);
         void Register(const SizeCallback& callback);

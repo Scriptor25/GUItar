@@ -1,9 +1,12 @@
+#include <iostream>
+
 #include <GL/glew.h>
+
 #include <guitar/application.hpp>
+
+#include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
-#include <imgui/imgui.h>
-#include <iostream>
 
 guitar::Application::Application(const std::filesystem::path& executable)
     : m_Resources(executable)
@@ -32,6 +35,26 @@ void guitar::Application::OnSize(int width, int height)
         callback(width, height);
 }
 
+void guitar::Application::OnInit(AppConfig& config)
+{
+}
+
+void guitar::Application::OnStart()
+{
+}
+
+void guitar::Application::OnImGui()
+{
+}
+
+void guitar::Application::OnStop()
+{
+}
+
+void guitar::Application::OnDestroy()
+{
+}
+
 static void glfw_error_callback(int error_code, const char* description)
 {
     std::cerr << "[GLFW 0x" << std::hex << error_code << std::dec << "] " << description << std::endl;
@@ -45,6 +68,11 @@ void guitar::Application::Register(const KeyCallback& callback)
 void guitar::Application::Register(const SizeCallback& callback)
 {
     m_SizeCallbacks.push_back(callback);
+}
+
+void guitar::Application::UseLayout(const std::string& id)
+{
+    m_Layout = m_Resources.GetLayout(id);
 }
 
 static void glfw_key_callback(GLFWwindow* window, const int key, const int scancode, const int action, const int mods)
@@ -129,7 +157,11 @@ bool guitar::Application::Loop()
         ImGui_ImplGlfw_NewFrame();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
+
+        if (m_Layout)
+            m_Layout->Draw();
         OnImGui();
+
         ImGui::Render();
 
         int width, height;

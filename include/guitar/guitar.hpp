@@ -8,4 +8,7 @@ namespace guitar
     struct AppConfig;
 
     struct Layout;
+    struct Element;
+    struct DockSpaceElement;
+    struct DemoElement;
 }

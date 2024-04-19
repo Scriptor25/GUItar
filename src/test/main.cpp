@@ -5,13 +5,13 @@ class Test
     : public guitar::Application
 {
 public:
-    Test(const std::filesystem::path &root)
+    explicit Test(const std::filesystem::path& root)
         : Application(root)
     {
     }
 
 protected:
-    void OnInit(guitar::AppConfig &config) override
+    void OnInit(guitar::AppConfig& config) override
     {
         config.Width = 800;
         config.Height = 600;
@@ -21,29 +21,17 @@ protected:
     void OnStart() override
     {
         Register(
-            [this](int key, int scancode, int action, int mods)
+            [this](const int key, const int scancode, const int action, const int mods)
             {
                 if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
                     Close();
             });
-    }
 
-    void OnImGui() override
-    {
-        ImGui::DockSpaceOverViewport();
-        ImGui::ShowDemoWindow();
-    }
-
-    void OnStop() override
-    {
-    }
-
-    void OnDestroy() override
-    {
+        UseLayout("main");
     }
 };
 
-int main(int argc, const char **argv)
+int main(int argc, const char** argv)
 {
     Test test(argv[0]);
     return test.Launch();

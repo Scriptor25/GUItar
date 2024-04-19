@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<layout id="main">
+<layout xmlns="imxml" id="main">
     <dockspace/>
     <demo/>
+    <window name="Test">
+        <text>Hello World!</text>
+    </window>
 </layout>

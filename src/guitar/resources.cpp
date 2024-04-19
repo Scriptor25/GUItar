@@ -1,5 +1,7 @@
-#include <guitar/resources.hpp>
 #include <iostream>
+#include <guitar/resources.hpp>
+#include <guitar/xml.hpp>
+#include <tinyxml2/tinyxml2.h>
 
 guitar::Resources::Resources(const std::filesystem::path& executable)
     : m_Root(executable.parent_path())
@@ -46,4 +48,25 @@ void guitar::Resources::IndexFile(const std::filesystem::path& path)
         return; // Not a layout
 
     std::cout << path << std::endl;
+    tinyxml2::XMLDocument doc;
+    doc.LoadFile(path.c_str());
+
+    const auto root = doc.RootElement();
+
+    const std::string type = root->Name();
+    if (type == "layout") return ParseLayout(root);
+
+    std::cerr << "[Resources] Failed to index " << path << ": undefined type '" << type << "'" << std::endl;
+}
+
+void guitar::Resources::ParseLayout(const tinyxml2::XMLElement* xml)
+{
+    Layout layout;
+    FromXML(xml, layout);
+    m_Layouts[layout.ID] = layout;
+}
+
+guitar::Layout* guitar::Resources::GetLayout(const std::string& id)
+{
+    return &m_Layouts[id];
 }
