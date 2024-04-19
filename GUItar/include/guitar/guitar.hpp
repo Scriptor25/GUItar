@@ -11,4 +11,6 @@ namespace guitar
     struct Element;
     struct DockSpaceElement;
     struct DemoElement;
+    struct WindowElement;
+    struct TextElement;
 }

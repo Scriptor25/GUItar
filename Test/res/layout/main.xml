@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<layout xmlns="imxml" id="main">
+<layout xmlns="ImGuiXML" id="main">
     <dockspace/>
     <demo/>
     <window name="Test">
