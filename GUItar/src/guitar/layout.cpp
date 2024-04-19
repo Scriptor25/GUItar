@@ -1,7 +1,24 @@
 #include <iostream>
+#include <guitar/application.hpp>
 #include <guitar/layout.hpp>
 #include <guitar/xml.hpp>
 #include <imgui/imgui.h>
+
+void guitar::FromXML(const tinyxml2::XMLElement *xml, guitar::AppConfig &ref)
+{
+    const char *title;
+    const char *version;
+    const char *layout;
+    xml->QueryStringAttribute("title", &title);
+    xml->QueryStringAttribute("version", &version);
+    xml->QueryStringAttribute("layout", &layout);
+
+    ref.Title = title;
+    ref.Version = version;
+    ref.Layout = layout;
+    xml->QueryIntAttribute("width", &ref.Width);
+    xml->QueryIntAttribute("height", &ref.Height);
+}
 
 void guitar::FromXML(const tinyxml2::XMLElement *xml, Layout &ref)
 {

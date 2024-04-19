@@ -1,38 +1,25 @@
 #include <guitar/application.hpp>
 
-class Test
-        : public guitar::Application {
+using namespace std::placeholders;
+
+class Test : public guitar::Application
+{
 public:
     explicit Test(const std::filesystem::path &root)
             : Application(root)
     {
+        Register(std::bind(&Test::OnInput, this, _1, _2, _3, _4));
     }
 
-protected:
-    void OnInit(guitar::AppConfig &config) override
+    void OnInput(const int key, const int scancode, const int action, const int mods)
     {
-        config.Width = 800;
-        config.Height = 600;
-        config.Title = "Test";
-    }
-
-    void OnStart() override
-    {
-        Register(
-                [this](const int key, const int scancode, const int action, const int mods)
-                {
-                    if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-                        Close();
-                });
-
-        UseLayout("main");
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+            Close();
     }
 };
 
 int main(int argc, const char **argv)
 {
     Test test(argv[0]);
-    if (test.Launch())
-        return 0;
-    return 1;
+    return !test.Launch();
 }
