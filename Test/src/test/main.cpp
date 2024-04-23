@@ -8,13 +8,11 @@ public:
     explicit Test(const std::filesystem::path &root)
             : Application(root)
     {
-        Register(std::bind(&Test::OnInput, this, _1, _2, _3, _4));
-    }
-
-    void OnInput(const int key, const int scancode, const int action, const int mods)
-    {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-            Close();
+        Register([this](const int key, const int scancode, const int action, const int mods)
+                 {
+                     if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+                         Close();
+                 });
     }
 };
 
