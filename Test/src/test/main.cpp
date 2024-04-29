@@ -13,6 +13,9 @@ public:
 
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
                 Close();
+
+            if (key == GLFW_KEY_F11 && action == GLFW_RELEASE)
+                ToggleFullscreen();
         });
     }
 };

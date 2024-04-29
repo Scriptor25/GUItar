@@ -72,6 +72,38 @@ void guitar::Application::UseLayout(const std::string& id)
     m_Layout = m_Resources.GetLayout(id);
 }
 
+void guitar::Application::SetFullscreen(const bool mode)
+{
+    if (mode == m_Fullscreen)
+        return;
+
+    if (mode)
+    {
+        glfwGetWindowPos(m_Handle, &m_SavedState.X, &m_SavedState.Y);
+        glfwGetWindowSize(m_Handle, &m_SavedState.Width, &m_SavedState.Height);
+
+        const auto monitor = glfwGetPrimaryMonitor();
+        const auto vidmode = glfwGetVideoMode(monitor);
+
+        int x, y;
+        glfwGetMonitorPos(monitor, &x, &y);
+
+        glfwSetWindowMonitor(m_Handle, monitor, x, y, vidmode->width, vidmode->height, vidmode->refreshRate);
+    }
+    else
+    {
+        glfwSetWindowMonitor(m_Handle, nullptr, m_SavedState.X, m_SavedState.Y, m_SavedState.Width, m_SavedState.Height,
+                             GLFW_DONT_CARE);
+    }
+
+    m_Fullscreen = mode;
+}
+
+void guitar::Application::ToggleFullscreen()
+{
+    SetFullscreen(!m_Fullscreen);
+}
+
 static void glfw_key_callback(GLFWwindow* window, const int key, const int scancode, const int action, const int mods)
 {
     auto& app = *static_cast<guitar::Application*>(glfwGetWindowUserPointer(window));

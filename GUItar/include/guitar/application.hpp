@@ -11,6 +11,14 @@ namespace guitar
     typedef std::function<void(int key, int scancode, int action, int mods)> KeyCallback;
     typedef std::function<void(int width, int height)> SizeCallback;
 
+    struct WindowState
+    {
+        int X = 0;
+        int Y = 0;
+        int Width = 0;
+        int Height = 0;
+    };
+
     class Application
     {
     public:
@@ -43,6 +51,10 @@ namespace guitar
 
         void UseLayout(const std::string& id);
 
+        void SetFullscreen(bool mode);
+
+        void ToggleFullscreen();
+
     private:
         bool Init();
 
@@ -53,6 +65,9 @@ namespace guitar
         GLFWwindow* m_Handle = nullptr;
         std::vector<KeyCallback> m_KeyCallbacks;
         std::vector<SizeCallback> m_SizeCallbacks;
+
+        WindowState m_SavedState{};
+        bool m_Fullscreen = false;
 
         Resources m_Resources;
         Layout* m_Layout = nullptr;

@@ -1,7 +1,7 @@
 find_package(OpenGL REQUIRED)
 
 if (UNIX AND NOT APPLE)
-    set(GUITAR_LIBS GLdispatch xcb Xau Xdmcp bsd)
+    set(GUITAR_LIBS GLdispatch xcb Xau Xdmcp bsd png16 z brotlidec brotlicommon)
 endif ()
 
 file(GLOB_RECURSE test_src "src/**.c" "src/**.cpp" "include/**.h" "include/**.hpp")
