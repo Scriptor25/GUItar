@@ -11,7 +11,7 @@ namespace guitar
         void Draw();
 
         std::string ID;
-        std::vector<Element *> Elements;
+        std::vector<Element*> Elements;
     };
 
     struct Element
@@ -36,7 +36,7 @@ namespace guitar
         void Draw() override;
 
         std::string Name;
-        std::vector<Element *> Elements;
+        std::vector<Element*> Elements;
     };
 
     struct TextElement : Element

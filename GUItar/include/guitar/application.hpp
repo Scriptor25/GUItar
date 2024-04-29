@@ -2,9 +2,7 @@
 #define GLFW_INCLUDE_NONE
 
 #include <functional>
-
 #include <GLFW/glfw3.h>
-
 #include <guitar/guitar.hpp>
 #include <guitar/resources.hpp>
 
@@ -16,20 +14,20 @@ namespace guitar
     class Application
     {
     public:
-        explicit Application(const std::filesystem::path &executable);
+        explicit Application(const std::filesystem::path& executable);
 
         virtual ~Application() = default;
 
         bool Launch();
 
-        void Close();
+        void Close() const;
 
         void OnKey(int key, int scancode, int action, int mods);
 
         void OnSize(int width, int height);
 
     protected:
-        virtual void OnInit(AppConfig &config);
+        virtual void OnInit(AppConfig& config);
 
         virtual void OnStart();
 
@@ -39,11 +37,11 @@ namespace guitar
 
         virtual void OnDestroy();
 
-        void Register(const KeyCallback &callback);
+        void Register(const KeyCallback& callback);
 
-        void Register(const SizeCallback &callback);
+        void Register(const SizeCallback& callback);
 
-        void UseLayout(const std::string &id);
+        void UseLayout(const std::string& id);
 
     private:
         bool Init();
@@ -52,11 +50,11 @@ namespace guitar
 
         bool Destroy();
 
-        GLFWwindow *m_Handle = nullptr;
+        GLFWwindow* m_Handle = nullptr;
         std::vector<KeyCallback> m_KeyCallbacks;
         std::vector<SizeCallback> m_SizeCallbacks;
 
         Resources m_Resources;
-        Layout *m_Layout = nullptr;
+        Layout* m_Layout = nullptr;
     };
 }

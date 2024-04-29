@@ -4,11 +4,11 @@
 #include <guitar/xml.hpp>
 #include <imgui.h>
 
-void guitar::FromXML(const tinyxml2::XMLElement *xml, guitar::AppConfig &ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, AppConfig& ref)
 {
-    const char *title;
-    const char *version;
-    const char *layout;
+    const char* title;
+    const char* version;
+    const char* layout;
     xml->QueryStringAttribute("title", &title);
     xml->QueryStringAttribute("version", &version);
     xml->QueryStringAttribute("layout", &layout);
@@ -20,9 +20,9 @@ void guitar::FromXML(const tinyxml2::XMLElement *xml, guitar::AppConfig &ref)
     xml->QueryIntAttribute("height", &ref.Height);
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement *xml, Layout &ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, Layout& ref)
 {
-    const char *id;
+    const char* id;
     xml->QueryStringAttribute("id", &id);
     ref.ID = id;
 
@@ -31,13 +31,13 @@ void guitar::FromXML(const tinyxml2::XMLElement *xml, Layout &ref)
 
     for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
     {
-        Element *element;
+        Element* element;
         FromXML(ptr, element);
         ref.Elements.push_back(element);
     }
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement *xml, Element *&ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, Element*& ref)
 {
     const std::string type = xml->Name();
     if (type == "dockspace")
@@ -72,17 +72,17 @@ void guitar::FromXML(const tinyxml2::XMLElement *xml, Element *&ref)
     std::cerr << "[Element FromXML] Undefined element type '" << type << "'" << std::endl;
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement *xml, DockSpaceElement &ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, DockSpaceElement& ref)
 {
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement *xml, DemoElement &ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, DemoElement& ref)
 {
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement *xml, guitar::WindowElement &ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, WindowElement& ref)
 {
-    const char *name;
+    const char* name;
     xml->QueryStringAttribute("name", &name);
     ref.Name = name;
 
@@ -91,20 +91,20 @@ void guitar::FromXML(const tinyxml2::XMLElement *xml, guitar::WindowElement &ref
 
     for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
     {
-        Element *element;
+        Element* element;
         FromXML(ptr, element);
         ref.Elements.push_back(element);
     }
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement *xml, guitar::TextElement &ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, TextElement& ref)
 {
     ref.Text = xml->GetText();
 }
 
 void guitar::Layout::Draw()
 {
-    for (const auto element: Elements)
+    for (const auto element : Elements)
         element->Draw();
 }
 
@@ -121,7 +121,7 @@ void guitar::DemoElement::Draw()
 void guitar::WindowElement::Draw()
 {
     if (ImGui::Begin(Name.c_str()))
-        for (auto element: Elements)
+        for (const auto element : Elements)
             element->Draw();
     ImGui::End();
 }

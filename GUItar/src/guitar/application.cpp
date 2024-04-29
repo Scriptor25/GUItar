@@ -1,12 +1,9 @@
-#include <iostream>
-
-#include <GL/glew.h>
-
-#include <guitar/application.hpp>
-
 #include <imgui.h>
+#include <iostream>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
+#include <GL/glew.h>
+#include <guitar/application.hpp>
 
 guitar::Application::Application(const std::filesystem::path& executable)
     : m_Resources(executable)
@@ -18,18 +15,18 @@ bool guitar::Application::Launch()
     return Init() && Loop() && Destroy();
 }
 
-void guitar::Application::Close()
+void guitar::Application::Close() const
 {
     glfwSetWindowShouldClose(m_Handle, GLFW_TRUE);
 }
 
-void guitar::Application::OnKey(int key, int scancode, int action, int mods)
+void guitar::Application::OnKey(const int key, const int scancode, const int action, const int mods)
 {
     for (auto& callback : m_KeyCallbacks)
         callback(key, scancode, action, mods);
 }
 
-void guitar::Application::OnSize(int width, int height)
+void guitar::Application::OnSize(const int width, const int height)
 {
     for (auto& callback : m_SizeCallbacks)
         callback(width, height);
@@ -55,7 +52,7 @@ void guitar::Application::OnDestroy()
 {
 }
 
-static void glfw_error_callback(int error_code, const char* description)
+static void glfw_error_callback(const int error_code, const char* description)
 {
     std::cerr << "[GLFW 0x" << std::hex << error_code << std::dec << "] " << description << std::endl;
 }
@@ -92,7 +89,7 @@ bool guitar::Application::Init()
     m_Resources.Index();
 
     glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
+    if (glfwInit() != GLFW_TRUE)
     {
         std::cerr << "[GUItar] Failed to init glfw" << std::endl;
         return false;
@@ -103,7 +100,7 @@ bool guitar::Application::Init()
 
     if (config.Width == 0 || config.Height == 0)
     {
-        auto vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        const auto vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         if (config.Width == 0)
             config.Width = vidMode->width / 2;
         if (config.Height == 0)
@@ -126,9 +123,9 @@ bool guitar::Application::Init()
 
     if (const auto err = glewInit())
     {
+        std::cerr << "[GUItar] Failed to init glew:" << std::endl;
         const auto msg = glewGetErrorString(err);
         std::cerr << "[GLEW 0x" << std::hex << err << std::dec << "] " << msg << std::endl;
-        std::cerr << "[GUItar] Failed to init glew" << std::endl;
         return false;
     }
 
