@@ -2,7 +2,7 @@
 #include <guitar/application.hpp>
 #include <guitar/layout.hpp>
 #include <guitar/xml.hpp>
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 void guitar::FromXML(const tinyxml2::XMLElement *xml, guitar::AppConfig &ref)
 {
