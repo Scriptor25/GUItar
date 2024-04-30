@@ -5,8 +5,8 @@
 #include <GL/glew.h>
 #include <guitar/application.hpp>
 
-guitar::Application::Application(const std::filesystem::path& executable)
-    : m_Resources(executable)
+guitar::Application::Application(const std::filesystem::path &executable)
+        : m_Resources(executable)
 {
 }
 
@@ -22,17 +22,17 @@ void guitar::Application::Close() const
 
 void guitar::Application::OnKey(const int key, const int scancode, const int action, const int mods)
 {
-    for (auto& callback : m_KeyCallbacks)
+    for (auto &callback: m_KeyCallbacks)
         callback(key, scancode, action, mods);
 }
 
 void guitar::Application::OnSize(const int width, const int height)
 {
-    for (auto& callback : m_SizeCallbacks)
+    for (auto &callback: m_SizeCallbacks)
         callback(width, height);
 }
 
-void guitar::Application::OnInit(AppConfig& config)
+void guitar::Application::OnInit(AppConfig &config)
 {
 }
 
@@ -52,22 +52,22 @@ void guitar::Application::OnDestroy()
 {
 }
 
-static void glfw_error_callback(const int error_code, const char* description)
+static void glfw_error_callback(const int error_code, const char *description)
 {
     std::cerr << "[GLFW 0x" << std::hex << error_code << std::dec << "] " << description << std::endl;
 }
 
-void guitar::Application::Register(const KeyCallback& callback)
+void guitar::Application::Register(const KeyCallback &callback)
 {
     m_KeyCallbacks.push_back(callback);
 }
 
-void guitar::Application::Register(const SizeCallback& callback)
+void guitar::Application::Register(const SizeCallback &callback)
 {
     m_SizeCallbacks.push_back(callback);
 }
 
-void guitar::Application::UseLayout(const std::string& id)
+void guitar::Application::UseLayout(const std::string &id)
 {
     m_Layout = m_Resources.GetLayout(id);
 }
@@ -104,15 +104,15 @@ void guitar::Application::ToggleFullscreen()
     SetFullscreen(!m_Fullscreen);
 }
 
-static void glfw_key_callback(GLFWwindow* window, const int key, const int scancode, const int action, const int mods)
+static void glfw_key_callback(GLFWwindow *window, const int key, const int scancode, const int action, const int mods)
 {
-    auto& app = *static_cast<guitar::Application*>(glfwGetWindowUserPointer(window));
+    auto &app = *static_cast<guitar::Application *>(glfwGetWindowUserPointer(window));
     app.OnKey(key, scancode, action, mods);
 }
 
-static void glfw_size_callback(GLFWwindow* window, const int width, const int height)
+static void glfw_size_callback(GLFWwindow *window, const int width, const int height)
 {
-    auto& app = *static_cast<guitar::Application*>(glfwGetWindowUserPointer(window));
+    auto &app = *static_cast<guitar::Application *>(glfwGetWindowUserPointer(window));
     app.OnSize(width, height);
 }
 
@@ -127,7 +127,7 @@ bool guitar::Application::Init()
         return false;
     }
 
-    auto& config = m_Resources.GetApp();
+    auto &config = m_Resources.GetApp();
     OnInit(config);
 
     if (config.Width == 0 || config.Height == 0)
@@ -162,7 +162,7 @@ bool guitar::Application::Init()
     }
 
     ImGui::CreateContext();
-    auto& io = ImGui::GetIO();
+    auto &io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;

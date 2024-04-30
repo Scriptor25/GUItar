@@ -22,7 +22,7 @@ namespace guitar
     class Application
     {
     public:
-        explicit Application(const std::filesystem::path& executable);
+        explicit Application(const std::filesystem::path &executable);
 
         virtual ~Application() = default;
 
@@ -35,7 +35,7 @@ namespace guitar
         void OnSize(int width, int height);
 
     protected:
-        virtual void OnInit(AppConfig& config);
+        virtual void OnInit(AppConfig &config);
 
         virtual void OnStart();
 
@@ -45,11 +45,11 @@ namespace guitar
 
         virtual void OnDestroy();
 
-        void Register(const KeyCallback& callback);
+        void Register(const KeyCallback &callback);
 
-        void Register(const SizeCallback& callback);
+        void Register(const SizeCallback &callback);
 
-        void UseLayout(const std::string& id);
+        void UseLayout(const std::string &id);
 
         void SetFullscreen(bool mode);
 
@@ -62,14 +62,14 @@ namespace guitar
 
         bool Destroy();
 
-        GLFWwindow* m_Handle = nullptr;
+        GLFWwindow *m_Handle = nullptr;
         std::vector<KeyCallback> m_KeyCallbacks;
         std::vector<SizeCallback> m_SizeCallbacks;
 
         WindowState m_SavedState{};
         bool m_Fullscreen = false;
 
-        Resources m_Resources;
-        Layout* m_Layout = nullptr;
+        ResourceManager m_Resources;
+        Layout *m_Layout = nullptr;
     };
 }
