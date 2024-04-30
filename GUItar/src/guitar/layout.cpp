@@ -38,52 +38,52 @@ void guitar::FromXML(const tinyxml2::XMLElement *xml, Layout &ref)
     for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
     {
         Element *element = nullptr;
-        FromXML(ref.Resources, ptr, element);
+        FromXML(ptr, element);
         if (element)
             ref.Elements.push_back(element);
     }
 }
 
-void guitar::FromXML(ResourceManager *resources, const tinyxml2::XMLElement *xml, Element *&ref)
+void guitar::FromXML(const tinyxml2::XMLElement *xml, Element *&ref)
 {
     const std::string type = xml->Name();
     if (type == "dockspace")
     {
-        const auto element = new DockSpaceElement(resources);
+        const auto element = new DockSpaceElement();
         FromXML(xml, *element);
         ref = element;
         return;
     }
     if (type == "demo")
     {
-        const auto element = new DemoElement(resources);
+        const auto element = new DemoElement();
         FromXML(xml, *element);
         ref = element;
         return;
     }
     if (type == "window")
     {
-        const auto element = new WindowElement(resources);
+        const auto element = new WindowElement();
         FromXML(xml, *element);
         ref = element;
         return;
     }
     if (type == "text")
     {
-        const auto element = new TextElement(resources);
+        const auto element = new TextElement();
         FromXML(xml, *element);
         ref = element;
         return;
     }
     if (type == "button")
     {
-        const auto element = new ButtonElement(resources);
+        const auto element = new ButtonElement();
         FromXML(xml, *element);
         ref = element;
         return;
     }
 
-    std::cerr << "[Element FromXML] Undefined element type '" << type << "'" << std::endl;
+    std::cerr << "[FromXML] Undefined element type '" << type << "'" << std::endl;
 }
 
 void guitar::FromXML(const tinyxml2::XMLElement *xml, DockSpaceElement &ref)
@@ -104,7 +104,7 @@ void guitar::FromXML(const tinyxml2::XMLElement *xml, WindowElement &ref)
     for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
     {
         Element *element = nullptr;
-        FromXML(ref.Resources, ptr, element);
+        FromXML(ptr, element);
         if (element)
             ref.Elements.push_back(element);
     }
@@ -121,78 +121,38 @@ void guitar::FromXML(const tinyxml2::XMLElement *xml, ButtonElement &ref)
     ref.Action = GetStringAttrib(xml, "action", "");
 }
 
-guitar::Layout::Layout()
-        : Resources(nullptr)
-{
-}
-
-guitar::Layout::Layout(guitar::ResourceManager *resources)
-        : Resources(resources)
-{
-}
-
-void guitar::Layout::Draw()
+void guitar::Layout::Draw(EventManager &events)
 {
     for (const auto element: Elements)
-        element->Draw();
+        element->Draw(events);
 }
 
-guitar::Element::Element(guitar::ResourceManager *resources)
-        : Resources(resources)
-{
-}
-
-guitar::DockSpaceElement::DockSpaceElement(guitar::ResourceManager *resources)
-        : Element(resources)
-{
-}
-
-void guitar::DockSpaceElement::Draw()
+void guitar::DockSpaceElement::Draw(EventManager &events)
 {
     ImGui::DockSpaceOverViewport();
 }
 
-guitar::DemoElement::DemoElement(guitar::ResourceManager *resources)
-        : Element(resources)
-{
-}
-
-void guitar::DemoElement::Draw()
+void guitar::DemoElement::Draw(EventManager &events)
 {
     ImGui::ShowDemoWindow();
 }
 
-guitar::WindowElement::WindowElement(guitar::ResourceManager *resources)
-        : Element(resources)
-{
-}
-
-void guitar::WindowElement::Draw()
+void guitar::WindowElement::Draw(EventManager &events)
 {
     if (ImGui::Begin(Name.c_str()))
         for (const auto element: Elements)
-            element->Draw();
+            element->Draw(events);
     ImGui::End();
 }
 
-guitar::TextElement::TextElement(guitar::ResourceManager *resources)
-        : Element(resources)
-{
-}
-
-void guitar::TextElement::Draw()
+void guitar::TextElement::Draw(EventManager &events)
 {
     ImGui::TextUnformatted(Text.c_str());
 }
 
-guitar::ButtonElement::ButtonElement(guitar::ResourceManager *resources)
-        : Element(resources)
-{
-}
-
-void guitar::ButtonElement::Draw()
+void guitar::ButtonElement::Draw(EventManager &events)
 {
     if (ImGui::Button(Text.c_str()))
         if (!Action.empty())
-            Resources->RunAction(Action);
+            events.Invoke(Action, new EventPayload(this));
 }

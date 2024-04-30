@@ -22,14 +22,12 @@ void guitar::Application::Close() const
 
 void guitar::Application::OnKey(const int key, const int scancode, const int action, const int mods)
 {
-    for (auto &callback: m_KeyCallbacks)
-        callback(key, scancode, action, mods);
+    m_Events.Invoke("on_key", new KeyPayload(this, key, scancode, action, mods));
 }
 
 void guitar::Application::OnSize(const int width, const int height)
 {
-    for (auto &callback: m_SizeCallbacks)
-        callback(width, height);
+    m_Events.Invoke("on_size", new SizePayload(this, width, height));
 }
 
 void guitar::Application::OnInit(AppConfig &config)
@@ -57,16 +55,6 @@ static void glfw_error_callback(const int error_code, const char *description)
     std::cerr << "[GLFW 0x" << std::hex << error_code << std::dec << "] " << description << std::endl;
 }
 
-void guitar::Application::Register(const KeyCallback &callback)
-{
-    m_KeyCallbacks.push_back(callback);
-}
-
-void guitar::Application::Register(const SizeCallback &callback)
-{
-    m_SizeCallbacks.push_back(callback);
-}
-
 void guitar::Application::UseLayout(const std::string &id)
 {
     m_Layout = m_Resources.GetLayout(id);
@@ -83,12 +71,12 @@ void guitar::Application::SetFullscreen(const bool mode)
         glfwGetWindowSize(m_Handle, &m_SavedState.Width, &m_SavedState.Height);
 
         const auto monitor = glfwGetPrimaryMonitor();
-        const auto vidmode = glfwGetVideoMode(monitor);
+        const auto vidMode = glfwGetVideoMode(monitor);
 
         int x, y;
         glfwGetMonitorPos(monitor, &x, &y);
 
-        glfwSetWindowMonitor(m_Handle, monitor, x, y, vidmode->width, vidmode->height, vidmode->refreshRate);
+        glfwSetWindowMonitor(m_Handle, monitor, x, y, vidMode->width, vidMode->height, vidMode->refreshRate);
     }
     else
     {
@@ -103,6 +91,17 @@ void guitar::Application::ToggleFullscreen()
 {
     SetFullscreen(!m_Fullscreen);
 }
+
+guitar::ResourceManager &guitar::Application::Resources()
+{
+    return m_Resources;
+}
+
+guitar::EventManager &guitar::Application::Events()
+{
+    return m_Events;
+}
+
 
 static void glfw_key_callback(GLFWwindow *window, const int key, const int scancode, const int action, const int mods)
 {
@@ -123,7 +122,7 @@ bool guitar::Application::Init()
     glfwSetErrorCallback(glfw_error_callback);
     if (glfwInit() != GLFW_TRUE)
     {
-        std::cerr << "[GUItar] Failed to init glfw" << std::endl;
+        std::cerr << "[Application] Failed to init glfw" << std::endl;
         return false;
     }
 
@@ -142,7 +141,7 @@ bool guitar::Application::Init()
     m_Handle = glfwCreateWindow(config.Width, config.Height, config.Title.c_str(), nullptr, nullptr);
     if (!m_Handle)
     {
-        std::cerr << "[GUItar] Failed to create glfw window" << std::endl;
+        std::cerr << "[Application] Failed to create glfw window" << std::endl;
         return false;
     }
 
@@ -155,7 +154,7 @@ bool guitar::Application::Init()
 
     if (const auto err = glewInit())
     {
-        std::cerr << "[GUItar] Failed to init glew:" << std::endl;
+        std::cerr << "[Application] Failed to init glew:" << std::endl;
         const auto msg = glewGetErrorString(err);
         std::cerr << "[GLEW 0x" << std::hex << err << std::dec << "] " << msg << std::endl;
         return false;
@@ -190,7 +189,7 @@ bool guitar::Application::Loop()
         ImGui::NewFrame();
 
         if (m_Layout)
-            m_Layout->Draw();
+            m_Layout->Draw(m_Events);
         OnImGui();
 
         ImGui::Render();

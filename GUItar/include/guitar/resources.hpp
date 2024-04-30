@@ -19,8 +19,7 @@ namespace guitar
 
         void CheckErrors() const;
 
-        [[nodiscard]]
-        std::ifstream Open(const std::string &name) const;
+        [[nodiscard]] std::ifstream Open(const std::string &name) const;
 
         void Index();
 
@@ -36,8 +35,6 @@ namespace guitar
 
         Layout *GetLayout(const std::string &id);
 
-        void RunAction(const std::string &id);
-
     private:
         std::filesystem::path m_Root;
 
@@ -45,6 +42,5 @@ namespace guitar
         AppConfig m_App;
 
         std::map<std::string, Layout> m_Layouts;
-        std::map<std::string, std::function<void(void)>> m_Actions;
     };
 }

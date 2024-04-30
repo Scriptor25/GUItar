@@ -8,6 +8,8 @@ namespace guitar
 
     class ResourceManager;
 
+    class EventManager;
+
     struct Layout;
     struct Element;
     struct DockSpaceElement;

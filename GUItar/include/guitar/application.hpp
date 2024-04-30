@@ -3,14 +3,12 @@
 
 #include <functional>
 #include <GLFW/glfw3.h>
+#include <guitar/events.hpp>
 #include <guitar/guitar.hpp>
 #include <guitar/resources.hpp>
 
 namespace guitar
 {
-    typedef std::function<void(int key, int scancode, int action, int mods)> KeyCallback;
-    typedef std::function<void(int width, int height)> SizeCallback;
-
     struct WindowState
     {
         int X = 0;
@@ -45,15 +43,15 @@ namespace guitar
 
         virtual void OnDestroy();
 
-        void Register(const KeyCallback &callback);
-
-        void Register(const SizeCallback &callback);
-
         void UseLayout(const std::string &id);
 
         void SetFullscreen(bool mode);
 
         void ToggleFullscreen();
+
+        ResourceManager &Resources();
+
+        EventManager &Events();
 
     private:
         bool Init();
@@ -63,13 +61,13 @@ namespace guitar
         bool Destroy();
 
         GLFWwindow *m_Handle = nullptr;
-        std::vector<KeyCallback> m_KeyCallbacks;
-        std::vector<SizeCallback> m_SizeCallbacks;
 
         WindowState m_SavedState{};
         bool m_Fullscreen = false;
 
         ResourceManager m_Resources;
+        EventManager m_Events;
+
         Layout *m_Layout = nullptr;
     };
 }

@@ -14,7 +14,7 @@ namespace guitar
 
     void FromXML(const tinyxml2::XMLElement *xml, Layout &ref);
 
-    void FromXML(ResourceManager *resources, const tinyxml2::XMLElement *xml, Element *&ref);
+    void FromXML(const tinyxml2::XMLElement *xml, Element *&ref);
 
     void FromXML(const tinyxml2::XMLElement *xml, DockSpaceElement &ref);
 

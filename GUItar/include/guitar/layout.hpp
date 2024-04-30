@@ -8,47 +8,32 @@ namespace guitar
 {
     struct Layout
     {
-        Layout();
+        void Draw(EventManager &events);
 
-        explicit Layout(ResourceManager *resources);
-
-        void Draw();
-
-        ResourceManager *Resources;
         std::string ID;
         std::vector<Element *> Elements;
     };
 
     struct Element
     {
-        explicit Element(ResourceManager *resources);
-
         virtual ~Element() = default;
 
-        virtual void Draw() = 0;
-
-        ResourceManager *Resources;
+        virtual void Draw(EventManager &events) = 0;
     };
 
     struct DockSpaceElement : Element
     {
-        explicit DockSpaceElement(ResourceManager *resources);
-
-        void Draw() override;
+        void Draw(EventManager &events) override;
     };
 
     struct DemoElement : Element
     {
-        explicit DemoElement(ResourceManager *resources);
-
-        void Draw() override;
+        void Draw(EventManager &events) override;
     };
 
     struct WindowElement : Element
     {
-        explicit WindowElement(ResourceManager *resources);
-
-        void Draw() override;
+        void Draw(EventManager &events) override;
 
         std::string Name;
         std::vector<Element *> Elements;
@@ -56,18 +41,14 @@ namespace guitar
 
     struct TextElement : Element
     {
-        explicit TextElement(ResourceManager *resources);
-
-        void Draw() override;
+        void Draw(EventManager &events) override;
 
         std::string Text;
     };
 
     struct ButtonElement : Element
     {
-        explicit ButtonElement(ResourceManager *resources);
-
-        void Draw() override;
+        void Draw(EventManager &events) override;
 
         std::string Text;
         std::string Action;

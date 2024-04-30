@@ -57,12 +57,12 @@ void guitar::ResourceManager::IndexFile(const std::filesystem::path &path)
     if (type == "layout") return ParseLayout(root);
     if (type == "app") return ParseApp(root);
 
-    std::cerr << "[Resources] Failed to index " << path << ": undefined type '" << type << "'" << std::endl;
+    std::cerr << "[ResourceManager] Failed to index " << path << ": undefined type '" << type << "'" << std::endl;
 }
 
 void guitar::ResourceManager::ParseLayout(const tinyxml2::XMLElement *xml)
 {
-    Layout layout(this);
+    Layout layout;
     FromXML(xml, layout);
     m_Layouts[layout.ID] = layout;
 }
@@ -70,7 +70,7 @@ void guitar::ResourceManager::ParseLayout(const tinyxml2::XMLElement *xml)
 void guitar::ResourceManager::ParseApp(const tinyxml2::XMLElement *xml)
 {
     if (m_AppConfigured)
-        std::cerr << "[Resources] Warning: app already configured" << std::endl;
+        std::cerr << "[ResourceManager] Warning: app already configured" << std::endl;
     m_AppConfigured = true;
     FromXML(xml, m_App);
 }
@@ -83,11 +83,4 @@ guitar::AppConfig &guitar::ResourceManager::GetApp()
 guitar::Layout *guitar::ResourceManager::GetLayout(const std::string &id)
 {
     return &m_Layouts[id];
-}
-
-void guitar::ResourceManager::RunAction(const std::string &id)
-{
-    const auto &action = m_Actions[id];
-    if (action) action();
-    else std::cerr << "[Resources] Warning: undefined action '" << id << "'" << std::endl;
 }
