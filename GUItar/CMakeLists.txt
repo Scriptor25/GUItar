@@ -30,5 +30,3 @@ target_link_libraries(GUItar PUBLIC
         libglew_static
         imgui
 )
-install(TARGETS GUItar)
-install(DIRECTORY include/guitar DESTINATION include)
