@@ -19,9 +19,5 @@ set(IMGUI_EXAMPLES OFF)
 set(IMGUI_ENABLE_FREETYPE ON)
 set(IMGUI_ENABLE_STDLIB_SUPPORT ON)
 
-add_subdirectory(GLFW)
-add_subdirectory(GLEW)
-add_subdirectory(ImGui)
 add_subdirectory(GUItar)
 add_subdirectory(Test)
-

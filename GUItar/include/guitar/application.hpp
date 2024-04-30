@@ -1,8 +1,9 @@
 #pragma once
 #define GLFW_INCLUDE_NONE
 
-#include <functional>
 #include <GLFW/glfw3.h>
+
+#include <functional>
 #include <guitar/events.hpp>
 #include <guitar/guitar.hpp>
 #include <guitar/resources.hpp>

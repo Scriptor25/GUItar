@@ -1,14 +1,12 @@
-#include <iostream>
 #include <guitar/resources.hpp>
+#include <guitar/tinyxml2.h>
 #include <guitar/xml.hpp>
-#include <tinyxml2/tinyxml2.h>
+#include <iostream>
 
 guitar::ResourceManager::ResourceManager(const std::filesystem::path &executable)
         : m_Root(executable.parent_path())
 {
 }
-
-guitar::ResourceManager::~ResourceManager() = default;
 
 void guitar::ResourceManager::CheckErrors() const
 {
@@ -75,7 +73,7 @@ void guitar::ResourceManager::ParseApp(const tinyxml2::XMLElement *xml)
     FromXML(xml, m_App);
 }
 
-guitar::AppConfig &guitar::ResourceManager::GetApp()
+guitar::AppConfig &guitar::ResourceManager::GetConfig()
 {
     return m_App;
 }

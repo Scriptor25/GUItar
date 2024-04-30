@@ -3,10 +3,10 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <guitar/layout.hpp>
 #include <map>
 #include <string>
-#include <guitar/layout.hpp>
-#include <tinyxml2/tinyxml2.h>
+#include "tinyxml2.h"
 
 namespace guitar
 {
@@ -15,14 +15,17 @@ namespace guitar
     public:
         explicit ResourceManager(const std::filesystem::path &executable);
 
-        ~ResourceManager();
-
         void CheckErrors() const;
 
         [[nodiscard]] std::ifstream Open(const std::string &name) const;
 
         void Index();
 
+        AppConfig &GetConfig();
+
+        Layout *GetLayout(const std::string &id);
+
+    private:
         void IndexDirectory(const std::filesystem::path &path);
 
         void IndexFile(const std::filesystem::path &path);
@@ -30,10 +33,6 @@ namespace guitar
         void ParseLayout(const tinyxml2::XMLElement *xml);
 
         void ParseApp(const tinyxml2::XMLElement *xml);
-
-        AppConfig &GetApp();
-
-        Layout *GetLayout(const std::string &id);
 
     private:
         std::filesystem::path m_Root;

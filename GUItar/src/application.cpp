@@ -1,9 +1,9 @@
-#include <imgui.h>
-#include <iostream>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <GL/glew.h>
 #include <guitar/application.hpp>
+#include <imgui.h>
+#include <iostream>
 
 guitar::Application::Application(const std::filesystem::path &executable)
         : m_Resources(executable)
@@ -126,7 +126,7 @@ bool guitar::Application::Init()
         return false;
     }
 
-    auto &config = m_Resources.GetApp();
+    auto &config = m_Resources.GetConfig();
     OnInit(config);
 
     if (config.Width == 0 || config.Height == 0)
