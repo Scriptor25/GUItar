@@ -8,7 +8,7 @@ namespace guitar
 {
     struct Layout
     {
-        void Draw();
+        void Draw(EventManager &events);
 
         std::string ID;
         std::vector<Element *> Elements;
@@ -18,22 +18,22 @@ namespace guitar
     {
         virtual ~Element() = default;
 
-        virtual void Draw() = 0;
+        virtual void Draw(EventManager &events) = 0;
     };
 
     struct DockSpaceElement : Element
     {
-        void Draw() override;
+        void Draw(EventManager &events) override;
     };
 
     struct DemoElement : Element
     {
-        void Draw() override;
+        void Draw(EventManager &events) override;
     };
 
     struct WindowElement : Element
     {
-        void Draw() override;
+        void Draw(EventManager &events) override;
 
         std::string Name;
         std::vector<Element *> Elements;
@@ -41,8 +41,16 @@ namespace guitar
 
     struct TextElement : Element
     {
-        void Draw() override;
+        void Draw(EventManager &events) override;
 
         std::string Text;
+    };
+
+    struct ButtonElement : Element
+    {
+        void Draw(EventManager &events) override;
+
+        std::string Text;
+        std::string Action;
     };
 }

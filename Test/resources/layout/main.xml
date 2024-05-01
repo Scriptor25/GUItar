@@ -4,5 +4,7 @@
     <demo/>
     <window name="Test">
         <text>Hello World!</text>
+        <button action="test">Press me!</button>
+        <button>No Action</button>
     </window>
 </layout>
