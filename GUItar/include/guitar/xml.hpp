@@ -1,28 +1,23 @@
 #pragma once
 
+#include <imgui.h>
 #include <string>
+#include <tinyxml2.h>
 #include <guitar/guitar.hpp>
-#include <guitar/tinyxml2.h>
 
 namespace guitar
 {
-    std::string GetStringAttrib(const tinyxml2::XMLElement *xml, const std::string &name, const std::string &alt);
+    void GetStringAttrib(const tinyxml2::XMLElement* xml, const std::string& name, std::string& ref);
+    void GetIntAttrib(const tinyxml2::XMLElement* xml, const std::string& name, int& ref);
+    void GetBoolAttrib(const tinyxml2::XMLElement* xml, const std::string& name, bool& ref);
+    void GetImVec2Attrib(const tinyxml2::XMLElement* xml, const std::string& name, ImVec2& ref);
 
-    int GetIntAttrib(const tinyxml2::XMLElement *xml, const std::string &name, int alt);
-
-    void FromXML(const tinyxml2::XMLElement *xml, AppConfig &ref);
-
-    void FromXML(const tinyxml2::XMLElement *xml, Layout &ref);
-
-    void FromXML(const tinyxml2::XMLElement *xml, Element *&ref);
-
-    void FromXML(const tinyxml2::XMLElement *xml, DockSpaceElement &ref);
-
-    void FromXML(const tinyxml2::XMLElement *xml, DemoElement &ref);
-
-    void FromXML(const tinyxml2::XMLElement *xml, WindowElement &ref);
-
-    void FromXML(const tinyxml2::XMLElement *xml, TextElement &ref);
-
-    void FromXML(const tinyxml2::XMLElement *xml, ButtonElement &ref);
+    void FromXML(const tinyxml2::XMLElement* xml, AppConfig& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, Layout& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, Element*& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, DockSpaceElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, DemoElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, WindowElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, ButtonElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, ImageElement& ref);
 }
