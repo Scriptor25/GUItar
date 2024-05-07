@@ -1,109 +1,45 @@
 #include <iostream>
-
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 #include <GL/glew.h>
-
+#include <GLFW/glfw3.h>
 #include <guitar/application.hpp>
+#include <guitar/layout.hpp>
 
-#include <imgui/imgui.h>
-#include <imgui/backends/imgui_impl_glfw.h>
-#include <imgui/backends/imgui_impl_opengl3.h>
-
-guitar::Application::Application(const std::filesystem::path &executable)
-        : m_Resources(executable)
-{
-}
-
-bool guitar::Application::Launch()
-{
-    return Init() && Loop() && Destroy();
-}
-
-void guitar::Application::Close()
-{
-    glfwSetWindowShouldClose(m_Handle, GLFW_TRUE);
-}
-
-void guitar::Application::OnKey(int key, int scancode, int action, int mods)
-{
-    for (auto &callback: m_KeyCallbacks)
-        callback(key, scancode, action, mods);
-}
-
-void guitar::Application::OnSize(int width, int height)
-{
-    for (auto &callback: m_SizeCallbacks)
-        callback(width, height);
-}
-
-void guitar::Application::OnInit(AppConfig &config)
-{
-}
-
-void guitar::Application::OnStart()
-{
-}
-
-void guitar::Application::OnImGui()
-{
-}
-
-void guitar::Application::OnStop()
-{
-}
-
-void guitar::Application::OnDestroy()
-{
-}
-
-static void glfw_error_callback(int error_code, const char *description)
+static void glfw_error_callback(const int error_code, const char* description)
 {
     std::cerr << "[GLFW 0x" << std::hex << error_code << std::dec << "] " << description << std::endl;
 }
 
-void guitar::Application::Register(const KeyCallback &callback)
+static void glfw_key_callback(GLFWwindow* window, const int key, const int scancode, const int action, const int mods)
 {
-    m_KeyCallbacks.push_back(callback);
-}
-
-void guitar::Application::Register(const SizeCallback &callback)
-{
-    m_SizeCallbacks.push_back(callback);
-}
-
-void guitar::Application::UseLayout(const std::string &id)
-{
-    m_Layout = m_Resources.GetLayout(id);
-}
-
-static void glfw_key_callback(GLFWwindow *window, const int key, const int scancode, const int action, const int mods)
-{
-    auto &app = *static_cast<guitar::Application *>(glfwGetWindowUserPointer(window));
+    auto& app = *static_cast<guitar::Application*>(glfwGetWindowUserPointer(window));
     app.OnKey(key, scancode, action, mods);
 }
 
-static void glfw_size_callback(GLFWwindow *window, const int width, const int height)
+static void glfw_size_callback(GLFWwindow* window, const int width, const int height)
 {
-    auto &app = *static_cast<guitar::Application *>(glfwGetWindowUserPointer(window));
+    auto& app = *static_cast<guitar::Application*>(glfwGetWindowUserPointer(window));
     app.OnSize(width, height);
 }
 
-bool guitar::Application::Init()
+void guitar::Application::Init()
 {
     m_Resources.Index();
 
     glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
+    if (glfwInit() != GLFW_TRUE)
     {
-        std::cerr << "[GUItar] Failed to init glfw" << std::endl;
-        return false;
+        std::cerr << "[Application] Failed to init glfw" << std::endl;
+        throw std::runtime_error("failed to init glfw");
     }
 
-    auto &config = m_Resources.GetApp();
+    auto& config = m_Resources.GetConfig();
     OnInit(config);
 
     if (config.Width == 0 || config.Height == 0)
     {
-        auto vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        const auto vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         if (config.Width == 0)
             config.Width = vidMode->width / 2;
         if (config.Height == 0)
@@ -113,8 +49,8 @@ bool guitar::Application::Init()
     m_Handle = glfwCreateWindow(config.Width, config.Height, config.Title.c_str(), nullptr, nullptr);
     if (!m_Handle)
     {
-        std::cerr << "[GUItar] Failed to create glfw window" << std::endl;
-        return false;
+        std::cerr << "[Application] Failed to create glfw window" << std::endl;
+        throw std::runtime_error("failed to create glfw window");
     }
 
     glfwSetWindowUserPointer(m_Handle, this);
@@ -126,14 +62,17 @@ bool guitar::Application::Init()
 
     if (const auto err = glewInit())
     {
+        std::cerr << "[Application] Failed to init glew:" << std::endl;
         const auto msg = glewGetErrorString(err);
         std::cerr << "[GLEW 0x" << std::hex << err << std::dec << "] " << msg << std::endl;
-        std::cerr << "[GUItar] Failed to init glew" << std::endl;
-        return false;
+        throw std::runtime_error("failed to init glew");
     }
 
+    m_Resources.LoadAllImages();
+    UseLayout(config.Layout);
+
     ImGui::CreateContext();
-    auto &io = ImGui::GetIO();
+    auto& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -142,13 +81,9 @@ bool guitar::Application::Init()
 
     ImGui_ImplOpenGL3_Init();
     ImGui_ImplGlfw_InitForOpenGL(m_Handle, true);
-
-    UseLayout(config.Layout);
-
-    return true;
 }
 
-bool guitar::Application::Loop()
+void guitar::Application::Loop()
 {
     OnStart();
 
@@ -156,12 +91,18 @@ bool guitar::Application::Loop()
     {
         glfwPollEvents();
 
+        for (const auto& task : m_Tasks)
+            task();
+        m_Tasks.clear();
+
+        m_InFrame = true;
+
         ImGui_ImplGlfw_NewFrame();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
 
         if (m_Layout)
-            m_Layout->Draw();
+            m_Layout->Draw(m_Resources, m_Events);
         OnImGui();
 
         ImGui::Render();
@@ -180,14 +121,14 @@ bool guitar::Application::Loop()
         }
 
         glfwSwapBuffers(m_Handle);
+
+        m_InFrame = false;
     }
 
     OnStop();
-
-    return true;
 }
 
-bool guitar::Application::Destroy()
+void guitar::Application::Destroy()
 {
     OnDestroy();
 
@@ -198,6 +139,4 @@ bool guitar::Application::Destroy()
     glfwDestroyWindow(m_Handle);
     m_Handle = nullptr;
     glfwTerminate();
-
-    return true;
 }

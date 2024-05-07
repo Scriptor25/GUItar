@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<layout xmlns="ImGuiXML" id="main">
-    <dockspace/>
-    <demo/>
-    <window name="Test">
-        <text>Hello World!</text>
-    </window>
-</layout>

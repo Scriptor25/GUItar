@@ -5,7 +5,19 @@ project(GUItar)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_subdirectory(GLEW)
-add_subdirectory(GLFW)
+set(GLFW_BUILD_EXAMPLES OFF)
+set(GLFW_BUILD_TESTS OFF)
+set(GLFW_BUILD_DOCS OFF)
+set(GLFW_INSTALL OFF)
+set(GLFW_LIBRARY_TYPE STATIC)
+
+set(glew-cmake_BUILD_SHARED OFF)
+set(glew-cmake_BUILD_STATIC ON)
+set(ONLY_LIBS ON)
+
+set(IMGUI_EXAMPLES OFF)
+set(IMGUI_ENABLE_FREETYPE ON)
+set(IMGUI_ENABLE_STDLIB_SUPPORT ON)
+
 add_subdirectory(GUItar)
 add_subdirectory(Test)
