@@ -41,7 +41,7 @@ public:
             return true;
         });
 
-        Events().Register("open_demo", this, [this](guitar::EventPayload* payload)
+        Events().Register("open_demo", this, [this](guitar::EventPayload*)
         {
             Schedule([this] { UseLayout("demo"); });
             return true;
