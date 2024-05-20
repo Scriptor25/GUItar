@@ -5,9 +5,7 @@
 namespace guitar
 {
     class Application;
-
     class ResourceManager;
-
     class EventManager;
 
     struct Layout;
@@ -15,8 +13,11 @@ namespace guitar
     struct DockSpaceElement;
     struct DemoElement;
     struct WindowElement;
-    struct TextElement;
     struct ButtonElement;
+    struct ImageElement;
+    struct TextElement;
+    struct SimpleElement;
+    struct Image;
 
     struct AppConfig
     {
