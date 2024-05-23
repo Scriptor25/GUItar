@@ -32,9 +32,9 @@ namespace guitar
         void IndexDirectory(const std::filesystem::path& path);
         void IndexFile(const std::filesystem::path& path);
 
-        void ParseLayout(const tinyxml2::XMLElement* xml);
-        void ParseApp(const tinyxml2::XMLElement* xml);
-        void ParseImage(const tinyxml2::XMLElement* xml);
+        void ParseLayout(const tinyxml2::XMLElement* pXml);
+        void ParseApp(const tinyxml2::XMLElement* pXml);
+        void ParseImage(const tinyxml2::XMLElement* pXml);
 
         std::filesystem::path m_Root;
 

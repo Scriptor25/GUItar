@@ -46,18 +46,18 @@ void guitar::Application::Init()
             config.Height = vidMode->height / 2;
     }
 
-    m_Handle = glfwCreateWindow(config.Width, config.Height, config.Title.c_str(), nullptr, nullptr);
-    if (!m_Handle)
+    m_PHandle = glfwCreateWindow(config.Width, config.Height, config.Title.c_str(), nullptr, nullptr);
+    if (!m_PHandle)
     {
         std::cerr << "[Application] Failed to create glfw window" << std::endl;
         throw std::runtime_error("failed to create glfw window");
     }
 
-    glfwSetWindowUserPointer(m_Handle, this);
-    glfwSetKeyCallback(m_Handle, glfw_key_callback);
-    glfwSetWindowSizeCallback(m_Handle, glfw_size_callback);
+    glfwSetWindowUserPointer(m_PHandle, this);
+    glfwSetKeyCallback(m_PHandle, glfw_key_callback);
+    glfwSetWindowSizeCallback(m_PHandle, glfw_size_callback);
 
-    glfwMakeContextCurrent(m_Handle);
+    glfwMakeContextCurrent(m_PHandle);
     glfwSwapInterval(1);
 
     if (const auto err = glewInit())
@@ -80,14 +80,14 @@ void guitar::Application::Init()
     io.ConfigDockingTransparentPayload = true;
 
     ImGui_ImplOpenGL3_Init();
-    ImGui_ImplGlfw_InitForOpenGL(m_Handle, true);
+    ImGui_ImplGlfw_InitForOpenGL(m_PHandle, true);
 }
 
 void guitar::Application::Loop()
 {
     OnStart();
 
-    while (!glfwWindowShouldClose(m_Handle))
+    while (!glfwWindowShouldClose(m_PHandle))
     {
         glfwPollEvents();
 
@@ -101,14 +101,14 @@ void guitar::Application::Loop()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
 
-        if (m_Layout)
-            m_Layout->Draw(m_Resources, m_Events);
+        if (m_PLayout)
+            m_PLayout->Draw(m_Resources, m_Events);
         OnImGui();
 
         ImGui::Render();
 
         int width, height;
-        glfwGetFramebufferSize(m_Handle, &width, &height);
+        glfwGetFramebufferSize(m_PHandle, &width, &height);
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -117,10 +117,10 @@ void guitar::Application::Loop()
         {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(m_Handle);
+            glfwMakeContextCurrent(m_PHandle);
         }
 
-        glfwSwapBuffers(m_Handle);
+        glfwSwapBuffers(m_PHandle);
 
         m_InFrame = false;
     }
@@ -136,7 +136,7 @@ void guitar::Application::Destroy()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(m_Handle);
-    m_Handle = nullptr;
+    glfwDestroyWindow(m_PHandle);
+    m_PHandle = nullptr;
     glfwTerminate();
 }

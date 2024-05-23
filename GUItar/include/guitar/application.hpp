@@ -61,7 +61,7 @@ namespace guitar
     class Application
     {
     public:
-        explicit Application(int argc, const char** argv);
+        explicit Application(int argc, const char** ppArgv);
         virtual ~Application() = default;
 
         /**
@@ -144,9 +144,9 @@ namespace guitar
          * Switch to fullscreen or windowed mode. If the mode
          * didn't change, the function does nothing.
          *
-         * @param mode if fullscreen should be used
+         * @param active if fullscreen should be active
          */
-        void SetFullscreen(bool mode);
+        void SetFullscreen(bool active);
 
         /**
          * Toggle between fullscreen and windowed mode.
@@ -172,14 +172,14 @@ namespace guitar
         void Loop();
         void Destroy();
 
-        GLFWwindow* m_Handle = nullptr;
+        GLFWwindow* m_PHandle = nullptr;
         WindowState m_SavedState{};
         bool m_Fullscreen = false;
 
         ResourceManager m_Resources;
         EventManager m_Events;
 
-        const Layout* m_Layout = nullptr;
+        const Layout* m_PLayout = nullptr;
 
         bool m_InFrame = false;
         std::vector<ScheduleTask> m_Tasks;

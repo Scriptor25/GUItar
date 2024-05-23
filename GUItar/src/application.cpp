@@ -1,7 +1,7 @@
 #include <guitar/application.hpp>
 
-guitar::Application::Application(const int argc, const char** argv)
-    : m_Resources(argv[0])
+guitar::Application::Application(const int argc, const char** ppArgv)
+    : m_Resources(ppArgv[0])
 {
     (void)argc;
 }
@@ -15,7 +15,7 @@ void guitar::Application::Launch()
 
 void guitar::Application::Close() const
 {
-    glfwSetWindowShouldClose(m_Handle, GLFW_TRUE);
+    glfwSetWindowShouldClose(m_PHandle, GLFW_TRUE);
 }
 
 void guitar::Application::OnKey(const int key, const int scancode, const int action, const int mods)
@@ -36,20 +36,20 @@ void guitar::Application::Schedule(const ScheduleTask& task)
 void guitar::Application::UseLayout(const std::string& id)
 {
     assert(!m_InFrame);
-    m_Layout = &m_Resources.GetLayout(id);
+    m_PLayout = &m_Resources.GetLayout(id);
 }
 
-void guitar::Application::SetFullscreen(const bool mode)
+void guitar::Application::SetFullscreen(const bool active)
 {
-    if (mode == m_Fullscreen)
+    if (active == m_Fullscreen)
         return;
 
     assert(!m_InFrame);
 
-    if (mode)
+    if (active)
     {
-        glfwGetWindowPos(m_Handle, &m_SavedState.X, &m_SavedState.Y);
-        glfwGetWindowSize(m_Handle, &m_SavedState.Width, &m_SavedState.Height);
+        glfwGetWindowPos(m_PHandle, &m_SavedState.X, &m_SavedState.Y);
+        glfwGetWindowSize(m_PHandle, &m_SavedState.Width, &m_SavedState.Height);
 
         const auto monitor = glfwGetPrimaryMonitor();
         const auto vidMode = glfwGetVideoMode(monitor);
@@ -57,14 +57,14 @@ void guitar::Application::SetFullscreen(const bool mode)
         int x, y;
         glfwGetMonitorPos(monitor, &x, &y);
 
-        glfwSetWindowMonitor(m_Handle, monitor, x, y, vidMode->width, vidMode->height, vidMode->refreshRate);
+        glfwSetWindowMonitor(m_PHandle, monitor, x, y, vidMode->width, vidMode->height, vidMode->refreshRate);
     }
     else
     {
-        glfwSetWindowMonitor(m_Handle, nullptr, m_SavedState.X, m_SavedState.Y, m_SavedState.Width, m_SavedState.Height, GLFW_DONT_CARE);
+        glfwSetWindowMonitor(m_PHandle, nullptr, m_SavedState.X, m_SavedState.Y, m_SavedState.Width, m_SavedState.Height, GLFW_DONT_CARE);
     }
 
-    m_Fullscreen = mode;
+    m_Fullscreen = active;
 }
 
 void guitar::Application::ToggleFullscreen()
