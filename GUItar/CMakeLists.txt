@@ -21,6 +21,7 @@ file(GLOB imgui_src
         ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
 add_library(imgui STATIC ${imgui_src})
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
+target_link_libraries(imgui PUBLIC glfw)
 
 file(GLOB_RECURSE src src/**.cpp include/**.hpp include/**.h)
 add_library(GUItar STATIC ${src})
