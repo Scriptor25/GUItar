@@ -107,6 +107,11 @@ namespace guitar
         virtual void OnStart();
 
         /**
+         * This gets called on every frame start.
+         */
+        virtual void OnFrame();
+
+        /**
          * This gets called every frame when ImGui expects input
          * to be submitted.
          */

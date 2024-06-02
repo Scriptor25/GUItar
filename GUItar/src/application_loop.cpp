@@ -89,11 +89,11 @@ void guitar::Application::Loop()
 
     while (!glfwWindowShouldClose(m_PHandle))
     {
-        glfwPollEvents();
-
         for (const auto& task : m_Tasks)
             task();
         m_Tasks.clear();
+
+        OnFrame();
 
         m_InFrame = true;
 
@@ -121,6 +121,7 @@ void guitar::Application::Loop()
         }
 
         glfwSwapBuffers(m_PHandle);
+        glfwPollEvents();
 
         m_InFrame = false;
     }
