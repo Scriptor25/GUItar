@@ -10,6 +10,8 @@
         <button action="open_demo">Open Demo</button>
         <separatorText>Image</separatorText>
         <image src="logo" type="resource"/>
+    </window>
+    <window name="Other Window">
         <image src="img_test" type="event"/>
     </window>
 </layout>

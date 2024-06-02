@@ -37,7 +37,7 @@ void guitar::Application::Init()
     auto& config = m_Resources.GetConfig();
     OnInit(config);
 
-    if (config.Width == 0 || config.Height == 0)
+    if (config.Width <= 0 || config.Height <= 0)
     {
         const auto vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         if (config.Width == 0)

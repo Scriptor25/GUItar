@@ -1,5 +1,6 @@
 #include <iostream>
 #include <guitar/application.hpp>
+#include <guitar/image.hpp>
 
 class Test : public guitar::Application
 {
@@ -7,17 +8,22 @@ public:
     explicit Test(const int argc, const char** argv)
         : Application(argc, argv)
     {
-        Events().Register("on_key", this, [this](guitar::EventPayload* payload)
+        Schedule([this]
         {
-            const auto& keyPayload = *dynamic_cast<guitar::KeyPayload*>(payload);
+            m_Image.StorePixels(100, 100, nullptr);
+        });
 
-            if (keyPayload.Key == GLFW_KEY_ESCAPE && keyPayload.Action == GLFW_RELEASE)
+        Events().Register("on_key", this, [this](const guitar::EventPayload* pPayload)
+        {
+            const auto& payload = *dynamic_cast<const guitar::KeyPayload*>(pPayload);
+
+            if (payload.Key == GLFW_KEY_ESCAPE && payload.Action == GLFW_RELEASE)
             {
                 Close();
                 return true;
             }
 
-            if (keyPayload.Key == GLFW_KEY_F11 && keyPayload.Action == GLFW_RELEASE)
+            if (payload.Key == GLFW_KEY_F11 && payload.Action == GLFW_RELEASE)
             {
                 Schedule([this] { ToggleFullscreen(); });
                 return true;
@@ -26,27 +32,30 @@ public:
             return false;
         });
 
-        Events().Register("test", this, [](guitar::EventPayload*)
+        Events().Register("test", this, [](const guitar::EventPayload*)
         {
             std::cout << "Hello World!" << std::endl;
             return true;
         });
 
-        Events().Register("img_test", this, [](guitar::EventPayload* payload)
+        Events().Register("img_test", this, [this](const guitar::EventPayload* pPayload)
         {
-            const auto& imagePayload = *dynamic_cast<guitar::ImagePayload*>(payload);
-            *imagePayload.PWidth = 100;
-            *imagePayload.PHeight = 100;
-            *imagePayload.PTextureID = nullptr;
+            const auto& payload = *dynamic_cast<const guitar::ImagePayload*>(pPayload);
+            *payload.PWidth = m_Image.Width;
+            *payload.PHeight = m_Image.Height;
+            *payload.PTextureID = reinterpret_cast<ImTextureID>(m_Image.Texture);
             return true;
         });
 
-        Events().Register("open_demo", this, [this](guitar::EventPayload*)
+        Events().Register("open_demo", this, [this](const guitar::EventPayload*)
         {
             Schedule([this] { UseLayout("demo"); });
             return true;
         });
     }
+
+private:
+    guitar::Image m_Image{};
 };
 
 int main(const int argc, const char** argv)

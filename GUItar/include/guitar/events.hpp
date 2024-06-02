@@ -57,7 +57,7 @@ namespace guitar
         int *PWidth, *PHeight;
     };
 
-    typedef std::function<bool(EventPayload* pPayload)> EventListener;
+    typedef std::function<bool(const EventPayload* pPayload)> EventListener;
 
     /**
      * The EventManager serves as a simple event system.
