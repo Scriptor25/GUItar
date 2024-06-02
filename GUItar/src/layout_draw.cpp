@@ -40,13 +40,18 @@ void guitar::ImageElement::Draw(ResourceManager& resources, EventManager& events
     int width = 0, height = 0;
     if (Type == "resource")
     {
-        const auto image = resources.GetImage(Source);
-        width = image->Width;
-        height = image->Height;
-        texture_id = reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image->Texture));
+        if (const auto image = resources.GetImage(Source))
+        {
+            width = image->Width;
+            height = image->Height;
+            texture_id = reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image->Texture));
+        }
     }
     else if (Type == "event")
         events.Invoke(Source, new ImagePayload(this, &texture_id, &width, &height));
+
+    if (!texture_id || width <= 0 || height <= 0)
+        return;
 
     ImVec2 bounds = Bounds;
     if (bounds.x <= 0 || bounds.y <= 0)
