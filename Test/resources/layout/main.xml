@@ -9,7 +9,7 @@
         <button>No Action</button>
         <button action="open_demo">Open Demo</button>
         <separatorText>Image</separatorText>
-        <image src="logo1" type="resource"/>
+        <image src="logo" type="resource"/>
         <image src="img_test" type="event"/>
     </window>
 </layout>

@@ -76,7 +76,7 @@ void guitar::Application::Init()
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    if (config.Viewports) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigDockingTransparentPayload = true;
 
     ImGui_ImplOpenGL3_Init();

@@ -26,5 +26,6 @@ namespace guitar
         std::string Layout = "main";
         int Width = 0;
         int Height = 0;
+        bool Viewports = true;
     };
 }
