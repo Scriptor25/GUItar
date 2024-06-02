@@ -52,7 +52,7 @@ void guitar::ImageElement::Draw(ResourceManager& resources, EventManager& events
     if (bounds.x <= 0 || bounds.y <= 0)
     {
         auto avail = ImGui::GetContentRegionAvail();
-        if (avail.y <= 100) avail = ImGui::GetWindowSize();
+        if (avail.y <= 0) avail = ImGui::GetWindowSize();
         const auto padding = ImGui::GetStyle().ItemSpacing;
         bounds.x = avail.x - padding.x;
         bounds.y = avail.y - padding.y;

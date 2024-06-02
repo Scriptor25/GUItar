@@ -61,27 +61,27 @@ void guitar::ResourceManager::IndexFile(const std::filesystem::path& path)
     std::cerr << "[ResourceManager] Failed to index " << path << ": undefined xml type '" << type << "'" << std::endl;
 }
 
-void guitar::ResourceManager::ParseLayout(const tinyxml2::XMLElement* xml)
+void guitar::ResourceManager::ParseLayout(const tinyxml2::XMLElement* pXml)
 {
     Layout layout;
-    FromXML(xml, layout);
+    FromXML(pXml, layout);
     m_Layouts[layout.ID] = layout;
 }
 
-void guitar::ResourceManager::ParseApp(const tinyxml2::XMLElement* xml)
+void guitar::ResourceManager::ParseApp(const tinyxml2::XMLElement* pXml)
 {
     if (m_AppConfigured)
         std::cerr << "[ResourceManager] Warning: app already configured" << std::endl;
     m_AppConfigured = true;
-    FromXML(xml, m_App);
+    FromXML(pXml, m_App);
 }
 
-void guitar::ResourceManager::ParseImage(const tinyxml2::XMLElement* xml)
+void guitar::ResourceManager::ParseImage(const tinyxml2::XMLElement* pXml)
 {
     std::string id, src, type;
-    GetStringAttrib(xml, "id", id);
-    GetStringAttrib(xml, "src", src);
-    GetStringAttrib(xml, "type", type); // TODO: differentiate between bitmap and vector images
+    GetStringAttrib(pXml, "id", id);
+    GetStringAttrib(pXml, "src", src);
+    GetStringAttrib(pXml, "type", type); // TODO: differentiate between bitmap and vector images
 
     m_Images[id] = std::make_shared<Image>(src);
 }

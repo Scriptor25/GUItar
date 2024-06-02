@@ -8,6 +8,10 @@ void guitar::Application::OnStart()
 {
 }
 
+void guitar::Application::OnFrame()
+{
+}
+
 void guitar::Application::OnImGui()
 {
 }

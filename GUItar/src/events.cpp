@@ -1,50 +1,50 @@
 #include <iostream>
 #include <guitar/events.hpp>
 
-bool guitar::EventManager::Invoke(const std::string& action, EventPayload* payload)
+bool guitar::EventManager::Invoke(const std::string& id, EventPayload* pPayload)
 {
     bool consumed = false;
-    for (const auto& [ptr, listener] : m_Listeners[action])
-        consumed = consumed || listener(payload);
+    for (const auto& [ptr, listener] : m_Listeners[id])
+        consumed = consumed || listener(pPayload);
     return consumed;
 }
 
-void guitar::EventManager::Register(const std::string& action, const void* ptr, const EventListener& listener)
+void guitar::EventManager::Register(const std::string& id, const void* pOwner, const EventListener& listener)
 {
-    auto& ref = m_Listeners[action][ptr];
+    auto& ref = m_Listeners[id][pOwner];
     if (ref)
         std::cerr
                 << "[EventManager] Warning: there already was a registered listener for '"
-                << action
+                << id
                 << "' by pointer "
-                << ptr
+                << pOwner
                 << std::endl;
     ref = listener;
 }
 
-void guitar::EventManager::Release(const std::string& action, const void* ptr)
+void guitar::EventManager::Release(const std::string& id, const void* pOwner)
 {
-    m_Listeners[action].erase(ptr);
+    m_Listeners[id].erase(pOwner);
 }
 
-guitar::EventPayload::EventPayload(void* source)
-    : Source(source)
+guitar::EventPayload::EventPayload(void* pSource)
+    : PSource(pSource)
 {
 }
 
 guitar::EventPayload::~EventPayload() = default;
 
-guitar::SizePayload::SizePayload(void* source, const int width, const int height)
-    : EventPayload(source), Width(width), Height(height)
+guitar::SizePayload::SizePayload(void* pSource, const int width, const int height)
+    : EventPayload(pSource), Width(width), Height(height)
 {
 }
 
-guitar::KeyPayload::KeyPayload(void* source, const int key, const int scancode, const int action, const int mods)
-    : EventPayload(source), Key(key), Scancode(scancode), Action(action), Mods(mods)
+guitar::KeyPayload::KeyPayload(void* pSource, const int key, const int scancode, const int action, const int mods)
+    : EventPayload(pSource), Key(key), Scancode(scancode), Action(action), Mods(mods)
 {
 }
 
-guitar::ImagePayload::ImagePayload(void* source, ImTextureID* pTextureID, int* pWidth, int* pHeight)
-    : EventPayload(source), PTextureID(pTextureID), PWidth(pWidth), PHeight(pHeight)
+guitar::ImagePayload::ImagePayload(void* pSource, ImTextureID* pTextureID, int* pWidth, int* pHeight)
+    : EventPayload(pSource), PTextureID(pTextureID), PWidth(pWidth), PHeight(pHeight)
 {
 }
