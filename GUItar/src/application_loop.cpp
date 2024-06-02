@@ -101,8 +101,9 @@ void guitar::Application::Loop()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
 
-        if (m_PLayout)
-            m_PLayout->Draw(m_Resources, m_Events);
+        /*if (m_PLayout)
+            m_PLayout->Draw(m_Resources, m_Events);*/
+        ImGui::ShowDemoWindow();
         OnImGui();
 
         ImGui::Render();
@@ -120,10 +121,10 @@ void guitar::Application::Loop()
             glfwMakeContextCurrent(m_PHandle);
         }
 
+        m_InFrame = false;
+
         glfwSwapBuffers(m_PHandle);
         glfwPollEvents();
-
-        m_InFrame = false;
     }
 
     OnStop();
