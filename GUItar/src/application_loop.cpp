@@ -101,10 +101,10 @@ void guitar::Application::Loop()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
 
-        /*if (m_PLayout)
-            m_PLayout->Draw(m_Resources, m_Events);*/
-        ImGui::ShowDemoWindow();
         OnImGui();
+
+        if (m_PLayout)
+            m_PLayout->Draw(m_Resources, m_Events);
 
         ImGui::Render();
 

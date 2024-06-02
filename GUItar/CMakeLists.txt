@@ -1,11 +1,11 @@
 include(FetchContent)
 FetchContent_Declare(glfw
         GIT_REPOSITORY https://github.com/glfw/glfw.git
-        GIT_TAG latest
+        GIT_TAG 3.4
 )
 FetchContent_Declare(glew
         GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
-        GIT_TAG master
+        GIT_TAG glew-cmake-release
 )
 FetchContent_Declare(imgui
         GIT_REPOSITORY https://github.com/ocornut/imgui.git
