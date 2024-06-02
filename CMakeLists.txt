@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project(GUItar)
 
+option(GUITAR_TEST "Enable building the test project" OFF)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -20,4 +22,6 @@ set(IMGUI_ENABLE_FREETYPE ON)
 set(IMGUI_ENABLE_STDLIB_SUPPORT ON)
 
 add_subdirectory(GUItar)
-add_subdirectory(Test)
+if (GUITAR_TEST)
+    add_subdirectory(Test)
+endif ()
