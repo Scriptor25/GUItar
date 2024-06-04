@@ -2,7 +2,20 @@
 #include <map>
 #include <guitar/layout.hpp>
 
-std::map<std::string, std::function<void(const char*)>> guitar::TextElement::FUNCS = {
+guitar::Element::~Element() = default;
+
+guitar::Layout::Layout() = default;
+
+guitar::Layout& guitar::Layout::operator=(Layout&& other) noexcept
+{
+    ID = other.ID;
+    Elements.clear();
+    for (auto& element : other.Elements)
+        Elements.push_back(std::move(element));
+    return *this;
+}
+
+std::map<std::string, guitar::TextFunc> guitar::TextElement::FUNCS = {
     {"text", ImGui::Text},
     {"separatorText", ImGui::SeparatorText},
 };

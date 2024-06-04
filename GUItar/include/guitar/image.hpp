@@ -10,6 +10,7 @@ namespace guitar
     {
         Image();
         explicit Image(const std::string& filename);
+
         ~Image();
 
         void Load(const ResourceManager& resources);

@@ -5,13 +5,16 @@
     <window name="Test">
         <text>Hello World!</text>
         <separatorText>Buttons</separatorText>
-        <button action="test">Press me!</button>
-        <button>No Action</button>
-        <button action="open_demo">Open Demo</button>
+        <button event="test">Press me!</button>
+        <button>No event</button>
+        <button event="open_demo">Open Demo</button>
         <separatorText>Image</separatorText>
-        <image src="logo" type="resource"/>
+        <image src="logo"/>
     </window>
     <window name="Other Window">
-        <image src="img_test" type="event"/>
+        <combo label="Test Combo##test" preview="$selected">
+            <custom event="test_combo_body"/>
+        </combo>
+        <image src="$img_test"/>
     </window>
 </layout>

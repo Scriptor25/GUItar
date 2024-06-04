@@ -16,11 +16,11 @@ namespace guitar
      */
     struct EventPayload
     {
-        explicit EventPayload(void* pSource);
+        explicit EventPayload(const void* pSource);
 
         virtual ~EventPayload();
 
-        void* PSource;
+        const void* PSource;
     };
 
     /**
@@ -29,7 +29,7 @@ namespace guitar
      */
     struct SizePayload : EventPayload
     {
-        SizePayload(void* pSource, int width, int height);
+        SizePayload(const void* pSource, int width, int height);
 
         int Width;
         int Height;
@@ -41,7 +41,7 @@ namespace guitar
      */
     struct KeyPayload : EventPayload
     {
-        KeyPayload(void* pSource, int key, int scancode, int action, int mods);
+        KeyPayload(const void* pSource, int key, int scancode, int action, int mods);
 
         int Key;
         int Scancode;
@@ -51,10 +51,17 @@ namespace guitar
 
     struct ImagePayload : EventPayload
     {
-        ImagePayload(void* pSource, ImTextureID* pTextureID, int* pWidth, int* pHeight);
+        ImagePayload(const void* pSource, ImTextureID& textureID, int& width, int& height);
 
-        ImTextureID* PTextureID;
-        int *PWidth, *PHeight;
+        ImTextureID& TextureID;
+        int &Width, &Height;
+    };
+
+    struct StringPayload : EventPayload
+    {
+        StringPayload(const void* pSource, std::string& result);
+
+        std::string& Result;
     };
 
     typedef std::function<bool(const EventPayload* pPayload)> EventListener;
@@ -74,7 +81,7 @@ namespace guitar
          * @param pPayload a payload containing event information
          * @return if the event got captured by a listener
          */
-        bool Invoke(const std::string& id, EventPayload* pPayload);
+        bool Invoke(const std::string& id, const EventPayload* pPayload);
 
         /**
          * Register a listener for an action, owned by a pointer.

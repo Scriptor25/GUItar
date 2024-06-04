@@ -6,6 +6,7 @@
 #include <string>
 #include <tinyxml2.h>
 #include <guitar/guitar.hpp>
+#include <guitar/image.hpp>
 #include <guitar/layout.hpp>
 
 namespace guitar
@@ -15,18 +16,16 @@ namespace guitar
     public:
         explicit ResourceManager(const std::filesystem::path& executable);
 
-        void CheckErrors() const;
-
         [[nodiscard]] std::ifstream Open(const std::string& name, std::ios_base::openmode mode) const;
 
+        void LoadAllImages();
         void Index();
 
         AppConfig& GetConfig();
-        const Layout& GetLayout(const std::string& id);
+        const Layout* GetLayout(const std::string& id);
+        const Image* GetImage(const std::string& id);
 
-        std::shared_ptr<Image> GetImage(const std::string& id);
-
-        void LoadAllImages();
+        std::string GetString(EventManager& events, const std::string& str) const;
 
     private:
         void IndexDirectory(const std::filesystem::path& path);
@@ -41,6 +40,6 @@ namespace guitar
         bool m_AppConfigured = false;
         AppConfig m_App;
         std::map<std::string, Layout> m_Layouts;
-        std::map<std::string, std::shared_ptr<Image>> m_Images;
+        std::map<std::string, Image> m_Images;
     };
 }

@@ -50,66 +50,80 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, Layout& ref)
 
     for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
     {
-        Element* element = nullptr;
+        std::unique_ptr<Element> element;
         FromXML(ptr, element);
         if (element)
-            ref.Elements.push_back(element);
+            ref.Elements.push_back(std::move(element));
     }
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, Element*& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* pXml, std::unique_ptr<Element>& ref)
 {
     const std::string type = pXml->Name();
     if (type == "dockspace")
     {
-        const auto element = new DockSpaceElement();
+        auto element = std::make_unique<DockSpaceElement>();
         FromXML(pXml, *element);
-        ref = element;
+        ref = std::move(element);
         return;
     }
     if (type == "demo")
     {
-        const auto element = new DemoElement();
+        auto element = std::make_unique<DemoElement>();
         FromXML(pXml, *element);
-        ref = element;
+        ref = std::move(element);
         return;
     }
     if (type == "window")
     {
-        const auto element = new WindowElement();
+        auto element = std::make_unique<WindowElement>();
         FromXML(pXml, *element);
-        ref = element;
+        ref = std::move(element);
         return;
     }
     if (type == "button")
     {
-        const auto element = new ButtonElement();
+        auto element = std::make_unique<ButtonElement>();
         FromXML(pXml, *element);
-        ref = element;
+        ref = std::move(element);
         return;
     }
     if (type == "image")
     {
-        const auto element = new ImageElement();
+        auto element = std::make_unique<ImageElement>();
         FromXML(pXml, *element);
-        ref = element;
+        ref = std::move(element);
+        return;
+    }
+    if (type == "combo")
+    {
+        auto element = std::make_unique<ComboElement>();
+        FromXML(pXml, *element);
+        ref = std::move(element);
+        return;
+    }
+    if (type == "custom")
+    {
+        auto element = std::make_unique<CustomElement>();
+        FromXML(pXml, *element);
+        ref = std::move(element);
         return;
     }
 
     if (const auto& func = TextElement::FUNCS[type])
     {
-        const auto element = new TextElement();
+        auto element = std::make_unique<TextElement>();
         element->Func = func;
         element->Text = pXml->GetText();
-        ref = element;
+        ref = std::move(element);
         return;
     }
 
     if (const auto& func = SimpleElement::FUNCS[type])
     {
-        const auto element = new SimpleElement();
+        auto element = std::make_unique<SimpleElement>();
         element->Func = func;
-        ref = element;
+        ref = std::move(element);
         return;
     }
 
@@ -133,25 +147,43 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, WindowElement& ref)
 
     for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
     {
-        Element* element = nullptr;
+        std::unique_ptr<Element> element;
         FromXML(ptr, element);
         if (element)
-            ref.Elements.push_back(element);
+            ref.Elements.push_back(std::move(element));
     }
 }
 
 void guitar::FromXML(const tinyxml2::XMLElement* pXml, ButtonElement& ref)
 {
     ref.Text = pXml->GetText();
-    GetStringAttrib(pXml, "action", ref.Action);
+    GetStringAttrib(pXml, "event", ref.Event);
 }
 
 void guitar::FromXML(const tinyxml2::XMLElement* pXml, ImageElement& ref)
 {
     GetStringAttrib(pXml, "src", ref.Source);
-    GetStringAttrib(pXml, "type", ref.Type);
     GetBoolAttrib(pXml, "keepRatio", ref.KeepRatio);
     GetImVec2Attrib(pXml, "bounds", ref.Bounds);
     GetImVec2Attrib(pXml, "uv0", ref.UV0);
     GetImVec2Attrib(pXml, "uv1", ref.UV1);
+}
+
+void guitar::FromXML(const tinyxml2::XMLElement* pXml, ComboElement& ref)
+{
+    GetStringAttrib(pXml, "label", ref.Label);
+    GetStringAttrib(pXml, "preview", ref.Preview);
+
+    for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
+    {
+        std::unique_ptr<Element> element;
+        FromXML(ptr, element);
+        if (element)
+            ref.Elements.push_back(std::move(element));
+    }
+}
+
+void guitar::FromXML(const tinyxml2::XMLElement* pXml, CustomElement& ref)
+{
+    GetStringAttrib(pXml, "event", ref.Event);
 }

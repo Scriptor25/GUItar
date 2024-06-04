@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="ImGuiXML">
 
-    <xs:simpleType name="sourceType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="resource"/>
-            <xs:enumeration value="event"/>
-        </xs:restriction>
-    </xs:simpleType>
-
     <xs:complexType name="primitive">
         <xs:choice>
             <xs:element name="button">
                 <xs:complexType>
                     <xs:complexContent>
                         <xs:extension base="xs:string">
-                            <xs:attribute name="action" type="xs:string"/>
+                            <xs:attribute name="event" type="xs:string"/>
                         </xs:extension>
                     </xs:complexContent>
                 </xs:complexType>
@@ -22,7 +15,6 @@
             <xs:element name="image">
                 <xs:complexType>
                     <xs:attribute name="src" type="xs:string" use="required"/>
-                    <xs:attribute name="type" type="sourceType" use="required"/>
                     <xs:attribute name="keepRatio" type="xs:boolean" default="true"/>
                     <xs:attribute name="bounds" type="xs:string" default="-1;-1"/>
                     <xs:attribute name="uv0" type="xs:string" default="0;0"/>
@@ -35,6 +27,21 @@
             <xs:element name="separator"/>
             <xs:element name="spacing"/>
             <xs:element name="newline"/>
+            <xs:element name="combo">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="primitive">
+                            <xs:attribute name="label" type="xs:string" use="required"/>
+                            <xs:attribute name="preview" type="xs:string"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="custom">
+                <xs:complexType>
+                    <xs:attribute name="event" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
         </xs:choice>
     </xs:complexType>
 

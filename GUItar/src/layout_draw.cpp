@@ -5,7 +5,7 @@
 
 void guitar::Layout::Draw(ResourceManager& resources, EventManager& events) const
 {
-    for (const auto element : Elements)
+    for (const auto& element : Elements)
         element->Draw(resources, events);
 }
 
@@ -21,24 +21,35 @@ void guitar::DemoElement::Draw(ResourceManager& resources, EventManager& events)
 
 void guitar::WindowElement::Draw(ResourceManager& resources, EventManager& events)
 {
-    if (ImGui::Begin(Name.c_str()))
-        for (const auto element : Elements)
+    const auto name = resources.GetString(events, Name);
+    if (ImGui::Begin(name.c_str()))
+        for (const auto& element : Elements)
             element->Draw(resources, events);
     ImGui::End();
 }
 
 void guitar::ButtonElement::Draw(ResourceManager& resources, EventManager& events)
 {
-    if (ImGui::Button(Text.c_str()))
-        if (!Action.empty())
-            events.Invoke(Action, new EventPayload(this));
+    const auto text = resources.GetString(events, Text);
+    if (ImGui::Button(text.c_str()))
+        if (!Event.empty())
+        {
+            const EventPayload payload(this);
+            events.Invoke(Event, &payload);
+        }
 }
 
 void guitar::ImageElement::Draw(ResourceManager& resources, EventManager& events)
 {
     ImTextureID texture_id = nullptr;
     int width = 0, height = 0;
-    if (Type == "resource")
+
+    if (Source[0] == '$')
+    {
+        const ImagePayload payload(this, texture_id, width, height);
+        events.Invoke(Source.substr(1), &payload);
+    }
+    else
     {
         if (const auto image = resources.GetImage(Source))
         {
@@ -47,8 +58,6 @@ void guitar::ImageElement::Draw(ResourceManager& resources, EventManager& events
             texture_id = reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image->Texture));
         }
     }
-    else if (Type == "event")
-        events.Invoke(Source, new ImagePayload(this, &texture_id, &width, &height));
 
     if (!texture_id || width <= 0 || height <= 0)
         return;
@@ -76,10 +85,30 @@ void guitar::ImageElement::Draw(ResourceManager& resources, EventManager& events
 
 void guitar::TextElement::Draw(ResourceManager& resources, EventManager& events)
 {
-    Func(Text.c_str());
+    const auto text = resources.GetString(events, Text);
+    Func(text.c_str());
 }
 
 void guitar::SimpleElement::Draw(ResourceManager& resources, EventManager& events)
 {
     Func();
+}
+
+void guitar::ComboElement::Draw(ResourceManager& resources, EventManager& events)
+{
+    const auto label = resources.GetString(events, Label);
+    const auto preview = resources.GetString(events, Preview);
+
+    if (ImGui::BeginCombo(label.c_str(), preview.c_str()))
+    {
+        for (const auto& element : Elements)
+            element->Draw(resources, events);
+        ImGui::EndCombo();
+    }
+}
+
+void guitar::CustomElement::Draw(ResourceManager& resources, EventManager& events)
+{
+    const EventPayload payload(this);
+    events.Invoke(Event, &payload);
 }

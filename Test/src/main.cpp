@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <guitar/application.hpp>
 #include <guitar/image.hpp>
 
@@ -8,10 +9,12 @@ public:
     explicit Test(const int argc, const char** argv)
         : Application(argc, argv)
     {
-        Schedule([this]
-        {
-            m_Image.StorePixels(100, 100, nullptr);
-        });
+    }
+
+protected:
+    void OnStart() override
+    {
+        m_Image.StorePixels(100, 100, nullptr);
 
         Events().Register("on_key", this, [this](const guitar::EventPayload* pPayload)
         {
@@ -41,9 +44,9 @@ public:
         Events().Register("img_test", this, [this](const guitar::EventPayload* pPayload)
         {
             const auto& payload = *dynamic_cast<const guitar::ImagePayload*>(pPayload);
-            *payload.PWidth = m_Image.Width;
-            *payload.PHeight = m_Image.Height;
-            *payload.PTextureID = reinterpret_cast<ImTextureID>(m_Image.Texture);
+            payload.Width = m_Image.Width;
+            payload.Height = m_Image.Height;
+            payload.TextureID = reinterpret_cast<ImTextureID>(m_Image.Texture);
             return true;
         });
 
@@ -52,10 +55,38 @@ public:
             Schedule([this] { UseLayout("demo"); });
             return true;
         });
+
+        Events().Register("selected", this, [this](const guitar::EventPayload* pPayload)
+        {
+            const auto& payload = *dynamic_cast<const guitar::StringPayload*>(pPayload);
+            payload.Result = m_Items[m_Selected];
+            return true;
+        });
+
+        Events().Register("test_combo_body", this, [this](const guitar::EventPayload*)
+        {
+            for (int i = 0; i < m_Items.size(); ++i)
+            {
+                ImGui::PushID(i);
+
+                const bool selected = i == m_Selected;
+                if (ImGui::Selectable(m_Items[i].c_str(), selected))
+                    m_Selected = i;
+                if (selected)
+                    ImGui::SetItemDefaultFocus();
+
+                ImGui::PopID();
+            }
+
+            return true;
+        });
     }
 
 private:
-    guitar::Image m_Image{};
+    guitar::Image m_Image;
+
+    int m_Selected = 0;
+    const std::vector<std::string> m_Items{"ABC", "DEF", "GHI", "JKL", "MNO", "PQR", "STU", "VWX", "Y_Z"};
 };
 
 int main(const int argc, const char** argv)

@@ -17,6 +17,9 @@ namespace guitar
     struct ImageElement;
     struct TextElement;
     struct SimpleElement;
+    struct ComboElement;
+    struct CustomElement;
+
     struct Image;
 
     struct AppConfig

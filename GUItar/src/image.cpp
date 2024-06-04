@@ -5,10 +5,7 @@
 #include <guitar/image.hpp>
 #include <guitar/resources.hpp>
 
-guitar::Image::Image()
-    : Image(std::string())
-{
-}
+guitar::Image::Image() = default;
 
 guitar::Image::Image(const std::string& filename)
     : Filename(filename)
@@ -17,7 +14,8 @@ guitar::Image::Image(const std::string& filename)
 
 guitar::Image::~Image()
 {
-    glDeleteTextures(1, &Texture);
+    if (Texture)
+        glDeleteTextures(1, &Texture);
 }
 
 void guitar::Image::Load(const ResourceManager& resources)

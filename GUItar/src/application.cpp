@@ -1,9 +1,8 @@
 #include <guitar/application.hpp>
 
-guitar::Application::Application(const int argc, const char** ppArgv)
+guitar::Application::Application(const int /*argc*/, const char** ppArgv)
     : m_Resources(ppArgv[0])
 {
-    (void)argc;
 }
 
 void guitar::Application::Launch()
@@ -36,7 +35,7 @@ void guitar::Application::Schedule(const ScheduleTask& task)
 void guitar::Application::UseLayout(const std::string& id)
 {
     assert(!m_InFrame);
-    m_PLayout = &m_Resources.GetLayout(id);
+    m_PLayout = m_Resources.GetLayout(id);
 }
 
 void guitar::Application::SetFullscreen(const bool active)

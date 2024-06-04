@@ -1,7 +1,7 @@
 #include <iostream>
 #include <guitar/events.hpp>
 
-bool guitar::EventManager::Invoke(const std::string& id, EventPayload* pPayload)
+bool guitar::EventManager::Invoke(const std::string& id, const EventPayload* pPayload)
 {
     bool consumed = false;
     for (const auto& [ptr, listener] : m_Listeners[id])
@@ -27,24 +27,29 @@ void guitar::EventManager::Release(const std::string& id, const void* pOwner)
     m_Listeners[id].erase(pOwner);
 }
 
-guitar::EventPayload::EventPayload(void* pSource)
+guitar::EventPayload::EventPayload(const void* pSource)
     : PSource(pSource)
 {
 }
 
 guitar::EventPayload::~EventPayload() = default;
 
-guitar::SizePayload::SizePayload(void* pSource, const int width, const int height)
+guitar::SizePayload::SizePayload(const void* pSource, const int width, const int height)
     : EventPayload(pSource), Width(width), Height(height)
 {
 }
 
-guitar::KeyPayload::KeyPayload(void* pSource, const int key, const int scancode, const int action, const int mods)
+guitar::KeyPayload::KeyPayload(const void* pSource, const int key, const int scancode, const int action, const int mods)
     : EventPayload(pSource), Key(key), Scancode(scancode), Action(action), Mods(mods)
 {
 }
 
-guitar::ImagePayload::ImagePayload(void* pSource, ImTextureID* pTextureID, int* pWidth, int* pHeight)
-    : EventPayload(pSource), PTextureID(pTextureID), PWidth(pWidth), PHeight(pHeight)
+guitar::ImagePayload::ImagePayload(const void* pSource, ImTextureID& textureID, int& width, int& height)
+    : EventPayload(pSource), TextureID(textureID), Width(width), Height(height)
+{
+}
+
+guitar::StringPayload::StringPayload(const void* pSource, std::string& result)
+    : EventPayload(pSource), Result(result)
 {
 }
