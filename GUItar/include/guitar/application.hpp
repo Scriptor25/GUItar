@@ -113,7 +113,10 @@ namespace guitar
 
         /**
          * This gets called every frame when ImGui expects input
-         * to be submitted.
+         * to be submitted. You can use this to customize your layout,
+         * although there also exists the @code custom@endcode xml element
+         * that is letting you insert your custom element anywhere. This
+         * uses the event system.
          */
         virtual void OnImGui();
 

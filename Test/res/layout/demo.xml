@@ -2,6 +2,6 @@
 <layout xmlns="ImGuiXML" id="demo">
     <dockspace/>
     <window name="Camera">
-        <image src="logo" type="resource"/>
+        <image src="logo"/>
     </window>
 </layout>

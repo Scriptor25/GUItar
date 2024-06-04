@@ -49,6 +49,13 @@ namespace guitar
         int Mods;
     };
 
+    /**
+     * The @code ImagePayload@endcode is used to transfer information about a
+     * texture from your code into the layout. It's utilized by
+     * the @code image@endcode xml element to query the texture
+     * information if you provide it an event id instead of a
+     * resource name.
+     */
     struct ImagePayload : EventPayload
     {
         ImagePayload(const void* pSource, ImTextureID& textureID, int& width, int& height);
@@ -57,6 +64,10 @@ namespace guitar
         int &Width, &Height;
     };
 
+    /**
+     * @code StringPayloads@endcode are used to transfer a string from code
+     * to a layout, similar to @code ImagePayloads@endcode.
+     */
     struct StringPayload : EventPayload
     {
         StringPayload(const void* pSource, std::string& result);

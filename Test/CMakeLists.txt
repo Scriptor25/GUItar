@@ -10,4 +10,4 @@ target_include_directories(Test PUBLIC include)
 target_link_libraries(Test PRIVATE OpenGL::GL GUItar ${GUITAR_LIBS})
 
 install(TARGETS Test)
-install(DIRECTORY resources DESTINATION bin)
+install(DIRECTORY res DESTINATION bin)
