@@ -2,6 +2,11 @@
 #include <vector>
 #include <guitar/application.hpp>
 #include <guitar/image.hpp>
+#include <implot.h>
+
+static const char* const LABEL_IDS[] = {"Hello", "World", "!"};
+static const float VALUES[] = {0.5f, 0.3f, 0.2f};
+static const int LABEL_COUNT = std::size(LABEL_IDS);
 
 class Test : public guitar::Application
 {
@@ -80,6 +85,19 @@ protected:
 
             return true;
         });
+    }
+
+    void OnImGui() override
+    {
+        if (ImGui::Begin("Custom Window"))
+        {
+            if (ImPlot::BeginPlot("Test Plot", {-1, -1}))
+            {
+                ImPlot::PlotPieChart(LABEL_IDS, VALUES, LABEL_COUNT, 0, 0, 100, "%.1f", 90, ImPlotPieChartFlags_IgnoreHidden | ImPlotPieChartFlags_Normalize);
+                ImPlot::EndPlot();
+            }
+        }
+        ImGui::End();
     }
 
 private:

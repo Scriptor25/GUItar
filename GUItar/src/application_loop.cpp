@@ -1,3 +1,4 @@
+#include <implot.h>
 #include <iostream>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -72,6 +73,7 @@ void guitar::Application::Init()
     UseLayout(config.Layout);
 
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     auto& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
@@ -136,6 +138,7 @@ void guitar::Application::Destroy()
 
     ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
     glfwDestroyWindow(m_PHandle);
