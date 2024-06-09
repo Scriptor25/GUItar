@@ -95,6 +95,9 @@ void guitar::Application::Loop()
             task();
         m_Tasks.clear();
 
+        // Update Input Manager
+        m_Input.Update(m_PHandle);
+
         OnFrame();
 
         m_InFrame = true;
@@ -103,10 +106,10 @@ void guitar::Application::Loop()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui::NewFrame();
 
-        OnImGui();
-
         if (m_PLayout)
             m_PLayout->Draw(m_Resources, m_Events);
+
+        OnImGui();
 
         ImGui::Render();
 

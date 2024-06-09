@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <guitar/events.hpp>
 #include <guitar/guitar.hpp>
+#include <guitar/input.hpp>
 #include <guitar/resources.hpp>
 
 namespace guitar
@@ -175,6 +176,8 @@ namespace guitar
          */
         EventManager& Events();
 
+        InputManager& Input();
+
     private:
         void Init();
         void Loop();
@@ -186,6 +189,7 @@ namespace guitar
 
         ResourceManager m_Resources;
         EventManager m_Events;
+        InputManager m_Input;
 
         const Layout* m_PLayout = nullptr;
 

@@ -80,3 +80,8 @@ guitar::EventManager& guitar::Application::Events()
 {
     return m_Events;
 }
+
+guitar::InputManager& guitar::Application::Input()
+{
+    return m_Input;
+}
