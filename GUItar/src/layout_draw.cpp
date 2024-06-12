@@ -9,12 +9,12 @@ void guitar::Layout::Draw(ResourceManager& resources, EventManager& events) cons
         element->Draw(resources, events);
 }
 
-void guitar::DockSpaceElement::Draw(ResourceManager& resources, EventManager& events)
+void guitar::DockSpaceElement::Draw(ResourceManager&, EventManager&)
 {
     ImGui::DockSpaceOverViewport();
 }
 
-void guitar::DemoElement::Draw(ResourceManager& resources, EventManager& events)
+void guitar::DemoElement::Draw(ResourceManager&, EventManager&)
 {
     ImGui::ShowDemoWindow();
 }
@@ -89,7 +89,7 @@ void guitar::TextElement::Draw(ResourceManager& resources, EventManager& events)
     Func(text.c_str());
 }
 
-void guitar::SimpleElement::Draw(ResourceManager& resources, EventManager& events)
+void guitar::SimpleElement::Draw(ResourceManager&, EventManager&)
 {
     Func();
 }
@@ -107,7 +107,7 @@ void guitar::ComboElement::Draw(ResourceManager& resources, EventManager& events
     }
 }
 
-void guitar::CustomElement::Draw(ResourceManager& resources, EventManager& events)
+void guitar::CustomElement::Draw(ResourceManager&, EventManager& events)
 {
     const EventPayload payload(this);
     events.Invoke(Event, &payload);

@@ -33,15 +33,15 @@ guitar::Joystick guitar::InputManager::GetJoystick(const int index)
     const auto hats = glfwGetJoystickHats(index, &hat_count);
 
     joystick.Axes.resize(axis_count);
-    for (size_t i = 0; i < axis_count; ++i)
+    for (int i = 0; i < axis_count; ++i)
         joystick.Axes[i] = axes[i];
 
     joystick.Buttons.resize(button_count);
-    for (size_t i = 0; i < button_count; ++i)
+    for (int i = 0; i < button_count; ++i)
         joystick.Buttons[i] = buttons[i];
 
     joystick.Hats.resize(hat_count);
-    for (size_t i = 0; i < hat_count; ++i)
+    for (int i = 0; i < hat_count; ++i)
         joystick.Hats[i] = hats[i];
 
     return joystick;
