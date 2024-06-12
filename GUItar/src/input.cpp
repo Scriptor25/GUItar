@@ -11,6 +11,7 @@ void guitar::Joystick::Dump()
     for (const auto& button : Buttons) std::cout << (button ? "1" : "0") << " ";
     std::cout << std::endl << "Hats: ";
     for (const auto& hat : Hats) std::cout << (hat & GLFW_HAT_LEFT ? "L" : hat & GLFW_HAT_RIGHT ? "R" : "") << (hat & GLFW_HAT_UP ? "U" : hat & GLFW_HAT_DOWN ? "D" : "") << (hat == GLFW_HAT_CENTERED ? "C" : "") << " ";
+    std::cout << std::endl;
 }
 
 void guitar::KeyState::Next(const bool state)
