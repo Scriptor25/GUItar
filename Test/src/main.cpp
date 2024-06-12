@@ -85,6 +85,8 @@ protected:
 
             return true;
         });
+
+        Input().GetJoystick(0);
     }
 
     void OnImGui() override

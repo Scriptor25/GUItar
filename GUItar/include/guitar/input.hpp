@@ -9,6 +9,8 @@ namespace guitar
 {
     struct Joystick
     {
+        void Dump();
+
         std::string Name;
 
         std::vector<float> Axes;
