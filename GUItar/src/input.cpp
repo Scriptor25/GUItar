@@ -9,7 +9,7 @@ void guitar::KeyState::Next(const bool state)
 
 guitar::Joystick guitar::InputManager::GetJoystick(const int index)
 {
-    if (!glfwJoystickPresent(index))
+    if (index < GLFW_JOYSTICK_1 || index > GLFW_JOYSTICK_16 || !glfwJoystickPresent(index))
         return {};
 
     Joystick joystick;
