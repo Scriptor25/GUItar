@@ -75,13 +75,15 @@ void guitar::Application::Init()
     ImGui::CreateContext();
     ImPlot::CreateContext();
     auto& io = ImGui::GetIO();
-    io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    if (config.Viewports) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    if (config.Viewports) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigDockingTransparentPayload = true;
+
+    io.ConfigViewportsNoDecoration = true;
+    io.ConfigViewportsNoTaskBarIcon = true;
 
     ImGui_ImplOpenGL3_Init();
     ImGui_ImplGlfw_InitForOpenGL(m_PHandle, true);
