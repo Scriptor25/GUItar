@@ -1,6 +1,6 @@
 #include <guitar/application.hpp>
 
-void guitar::Application::OnInit(AppConfig& config)
+void guitar::Application::OnInit(AppConfig&)
 {
 }
 
