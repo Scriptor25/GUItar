@@ -12,6 +12,11 @@ void guitar::Application::Launch()
     Destroy();
 }
 
+bool guitar::Application::IsActive() const
+{
+    return m_PHandle && !glfwWindowShouldClose(m_PHandle);
+}
+
 void guitar::Application::Close() const
 {
     glfwSetWindowShouldClose(m_PHandle, GLFW_TRUE);

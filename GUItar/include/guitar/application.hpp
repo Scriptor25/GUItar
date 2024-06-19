@@ -71,6 +71,12 @@ namespace guitar
         void Launch();
 
         /**
+         *
+         * @return true if the application is launched and not closing
+         */
+        bool IsActive() const;
+
+        /**
          * Close the application.
          */
         void Close() const;
