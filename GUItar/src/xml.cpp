@@ -57,82 +57,38 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, Layout& ref)
     }
 }
 
+template <typename T>
+static void from_xml(const tinyxml2::XMLElement* pXml, std::unique_ptr<guitar::Element>& ref)
+{
+    auto element = std::make_unique<T>();
+    guitar::FromXML(pXml, *element);
+    ref = std::move(element);
+}
+
+static std::map<std::string, std::function<void(const tinyxml2::XMLElement*, std::unique_ptr<guitar::Element>&)>> xml_funcs
+{
+    {"bullet", from_xml<guitar::SimpleElement>},
+    {"button", from_xml<guitar::ButtonElement>},
+    {"checkbox", from_xml<guitar::CheckboxElement>},
+    {"combo", from_xml<guitar::ComboElement>},
+    {"custom", from_xml<guitar::CustomElement>},
+    {"demo", from_xml<guitar::DemoElement>},
+    {"dockspace", from_xml<guitar::DockSpaceElement>},
+    {"image", from_xml<guitar::ImageElement>},
+    {"inputText", from_xml<guitar::InputTextElement>},
+    {"newline", from_xml<guitar::SimpleElement>},
+    {"separator", from_xml<guitar::SimpleElement>},
+    {"separatorText", from_xml<guitar::TextElement>},
+    {"spacing", from_xml<guitar::SimpleElement>},
+    {"text", from_xml<guitar::TextElement>},
+    {"window", from_xml<guitar::WindowElement>},
+};
+
 void guitar::FromXML(const tinyxml2::XMLElement* pXml, std::unique_ptr<Element>& ref)
 {
     const std::string type = pXml->Name();
-    if (type == "dockspace")
-    {
-        auto element = std::make_unique<DockSpaceElement>();
-        FromXML(pXml, *element);
-        ref = std::move(element);
-        return;
-    }
-    if (type == "demo")
-    {
-        auto element = std::make_unique<DemoElement>();
-        FromXML(pXml, *element);
-        ref = std::move(element);
-        return;
-    }
-    if (type == "window")
-    {
-        auto element = std::make_unique<WindowElement>();
-        FromXML(pXml, *element);
-        ref = std::move(element);
-        return;
-    }
-    if (type == "button")
-    {
-        auto element = std::make_unique<ButtonElement>();
-        FromXML(pXml, *element);
-        ref = std::move(element);
-        return;
-    }
-    if (type == "image")
-    {
-        auto element = std::make_unique<ImageElement>();
-        FromXML(pXml, *element);
-        ref = std::move(element);
-        return;
-    }
-    if (type == "combo")
-    {
-        auto element = std::make_unique<ComboElement>();
-        FromXML(pXml, *element);
-        ref = std::move(element);
-        return;
-    }
-    if (type == "custom")
-    {
-        auto element = std::make_unique<CustomElement>();
-        FromXML(pXml, *element);
-        ref = std::move(element);
-        return;
-    }
-    if (type == "inputText")
-    {
-        auto element = std::make_unique<InputTextElement>();
-        FromXML(pXml, *element);
-        ref = std::move(element);
-        return;
-    }
-
-    if (const auto& func = TextElement::FUNCS[type])
-    {
-        auto element = std::make_unique<TextElement>();
-        element->Func = func;
-        element->Text = pXml->GetText();
-        ref = std::move(element);
-        return;
-    }
-
-    if (const auto& func = SimpleElement::FUNCS[type])
-    {
-        auto element = std::make_unique<SimpleElement>();
-        element->Func = func;
-        ref = std::move(element);
-        return;
-    }
+    if (const auto& func = xml_funcs[type])
+        return func(pXml, ref);
 
     std::cerr << "[FromXML] Undefined element type '" << type << "'" << std::endl;
 }
@@ -200,4 +156,27 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, InputTextElement& ref)
     GetStringAttrib(pXml, "label", ref.Label);
     GetStringAttrib(pXml, "hint", ref.Hint);
     GetStringAttrib(pXml, "event", ref.Event);
+}
+
+void guitar::FromXML(const tinyxml2::XMLElement* pXml, CheckboxElement& ref)
+{
+    GetStringAttrib(pXml, "label", ref.Label);
+    GetStringAttrib(pXml, "event", ref.Event);
+}
+
+void guitar::FromXML(const tinyxml2::XMLElement* pXml, TextElement& ref)
+{
+    const std::string type = pXml->Name();
+    const auto& func = TextElement::FUNCS[type];
+
+    ref.Func = func;
+    ref.Text = pXml->GetText();
+}
+
+void guitar::FromXML(const tinyxml2::XMLElement* pXml, SimpleElement& ref)
+{
+    const std::string type = pXml->Name();
+    const auto& func = SimpleElement::FUNCS[type];
+
+    ref.Func = func;
 }

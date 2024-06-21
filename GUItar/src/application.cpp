@@ -40,7 +40,14 @@ void guitar::Application::Schedule(const ScheduleTask& task)
 void guitar::Application::UseLayout(const std::string& id)
 {
     assert(!m_InFrame);
+
+    if (m_PLayout)
+        ImGui::SaveIniSettingsToDisk(m_PLayout->ID.c_str());
+
     m_PLayout = m_Resources.GetLayout(id);
+
+    if (m_PLayout)
+        ImGui::LoadIniSettingsFromDisk(m_PLayout->ID.c_str());
 }
 
 void guitar::Application::SetFullscreen(const bool active)

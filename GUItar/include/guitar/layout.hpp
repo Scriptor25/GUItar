@@ -113,4 +113,14 @@ namespace guitar
 
         std::string Var;
     };
+
+    struct CheckboxElement : Element
+    {
+        void Draw(ResourceManager& resources, EventManager& events) override;
+
+        std::string Label;
+        std::string Event;
+
+        bool Var;
+    };
 }

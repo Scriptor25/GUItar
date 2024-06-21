@@ -70,7 +70,6 @@ void guitar::Application::Init()
     }
 
     m_Resources.LoadAllImages();
-    UseLayout(config.Layout);
 
     ImGui::CreateContext();
     ImPlot::CreateContext();
@@ -87,6 +86,8 @@ void guitar::Application::Init()
 
     ImGui_ImplOpenGL3_Init();
     ImGui_ImplGlfw_InitForOpenGL(m_PHandle, true);
+
+    UseLayout(config.Layout);
 }
 
 void guitar::Application::Loop()
@@ -142,6 +143,8 @@ void guitar::Application::Loop()
 void guitar::Application::Destroy()
 {
     OnDestroy();
+
+    UseLayout(std::string());
 
     ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();

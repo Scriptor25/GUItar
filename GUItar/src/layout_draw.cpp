@@ -125,3 +125,14 @@ void guitar::InputTextElement::Draw(ResourceManager& resources, EventManager& ev
         events.Invoke(Event, &payload);
     }
 }
+
+void guitar::CheckboxElement::Draw(ResourceManager& resources, EventManager& events)
+{
+    const auto label = resources.GetString(events, Label);
+
+    if (ImGui::Checkbox(label.c_str(), &Var))
+    {
+        const EventPayload payload(this);
+        events.Invoke(Event, &payload);
+    }
+}
