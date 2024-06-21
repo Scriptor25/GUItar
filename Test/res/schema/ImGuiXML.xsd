@@ -42,6 +42,13 @@
                     <xs:attribute name="event" type="xs:string" use="required"/>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="inputText">
+                <xs:complexType>
+                    <xs:attribute name="label" type="xs:string" use="required"/>
+                    <xs:attribute name="hint" type="xs:string"/>
+                    <xs:attribute name="event" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
         </xs:choice>
     </xs:complexType>
 

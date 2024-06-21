@@ -2,6 +2,7 @@
 #include <guitar/application.hpp>
 #include <guitar/image.hpp>
 #include <guitar/layout.hpp>
+#include <misc/cpp/imgui_stdlib.h>
 
 void guitar::Layout::Draw(ResourceManager& resources, EventManager& events) const
 {
@@ -111,4 +112,16 @@ void guitar::CustomElement::Draw(ResourceManager&, EventManager& events)
 {
     const EventPayload payload(this);
     events.Invoke(Event, &payload);
+}
+
+void guitar::InputTextElement::Draw(ResourceManager& resources, EventManager& events)
+{
+    const auto label = resources.GetString(events, Label);
+    const auto hint = resources.GetString(events, Hint);
+
+    if (ImGui::InputTextWithHint(label.c_str(), hint.c_str(), &Var, ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        const StringPayload payload(this, Var);
+        events.Invoke(Event, &payload);
+    }
 }

@@ -83,7 +83,7 @@ void guitar::Application::Init()
     io.ConfigDockingTransparentPayload = true;
 
     io.ConfigViewportsNoDecoration = true;
-    io.ConfigViewportsNoTaskBarIcon = true;
+    // io.ConfigViewportsNoTaskBarIcon = true;
 
     ImGui_ImplOpenGL3_Init();
     ImGui_ImplGlfw_InitForOpenGL(m_PHandle, true);

@@ -102,4 +102,15 @@ namespace guitar
 
         std::string Event;
     };
+
+    struct InputTextElement : Element
+    {
+        void Draw(ResourceManager& resources, EventManager& events) override;
+
+        std::string Label;
+        std::string Hint;
+        std::string Event;
+
+        std::string Var;
+    };
 }

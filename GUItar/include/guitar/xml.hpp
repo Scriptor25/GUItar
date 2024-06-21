@@ -22,4 +22,5 @@ namespace guitar
     void FromXML(const tinyxml2::XMLElement* pXml, ImageElement& ref);
     void FromXML(const tinyxml2::XMLElement* pXml, ComboElement& ref);
     void FromXML(const tinyxml2::XMLElement* pXml, CustomElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, InputTextElement& ref);
 }

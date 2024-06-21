@@ -109,6 +109,13 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, std::unique_ptr<Element>&
         ref = std::move(element);
         return;
     }
+    if (type == "inputText")
+    {
+        auto element = std::make_unique<InputTextElement>();
+        FromXML(pXml, *element);
+        ref = std::move(element);
+        return;
+    }
 
     if (const auto& func = TextElement::FUNCS[type])
     {
@@ -185,5 +192,12 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, ComboElement& ref)
 
 void guitar::FromXML(const tinyxml2::XMLElement* pXml, CustomElement& ref)
 {
+    GetStringAttrib(pXml, "event", ref.Event);
+}
+
+void guitar::FromXML(const tinyxml2::XMLElement* pXml, InputTextElement& ref)
+{
+    GetStringAttrib(pXml, "label", ref.Label);
+    GetStringAttrib(pXml, "hint", ref.Hint);
     GetStringAttrib(pXml, "event", ref.Event);
 }

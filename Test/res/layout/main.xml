@@ -15,6 +15,7 @@
         <combo label="Test Combo##test" preview="$selected">
             <custom event="test_combo_body"/>
         </combo>
+        <inputText label="An Input Text" hint="enter some text and press enter" event="on_input_text"/>
         <image src="$img_test"/>
     </window>
 </layout>

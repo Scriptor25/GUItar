@@ -86,7 +86,14 @@ protected:
             return true;
         });
 
-        Input().GetJoystick(0);
+        Events().Register("on_input_text", this, [this](const guitar::EventPayload* pPayload)
+        {
+            const auto& payload = *dynamic_cast<const guitar::StringPayload*>(pPayload);
+            if (payload.Result.empty())
+                return false;
+            std::cout << "Input: " << payload.Result << std::endl;
+            return true;
+        });
     }
 
     void OnImGui() override
