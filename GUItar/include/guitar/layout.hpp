@@ -113,11 +113,14 @@ namespace guitar
 
     struct InputTextElement : Element
     {
+        void Register(ResourceManager& resources, EventManager& events) override;
+
         void Draw(ResourceManager& resources, EventManager& events) override;
 
         std::string Label;
         std::string Hint;
         std::string Event;
+        std::string Default;
 
         std::string Var;
     };
@@ -177,10 +180,13 @@ namespace guitar
 
     struct CheckboxElement : Element
     {
+        void Register(ResourceManager& resources, EventManager& events) override;
+
         void Draw(ResourceManager& resources, EventManager& events) override;
 
         std::string Label;
         std::string Event;
+        std::string Default;
 
         bool Var = false;
     };

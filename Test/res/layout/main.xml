@@ -3,7 +3,10 @@
     <menubar>
         <menu label="File">
             <item shortcut="ctrl+h" event="test">Hello World!</item>
-            <item shortcut="escape|alt+f4">Exit</item>
+            <item shortcut="escape|alt+f4" event="close">Exit</item>
+        </menu>
+        <menu label="Window">
+            <item shortcut="f11" event="fullscreen">Toggle Fullscreen</item>
         </menu>
     </menubar>
     <demo/>
@@ -20,7 +23,7 @@
         <combo label="Test Combo##test" preview="$selected">
             <custom event="test_combo_body"/>
         </combo>
-        <inputText label="An Input Text" hint="enter some text and press enter" event="on_input_text"/>
+        <inputText label="An Input Text" hint="enter some text and press enter" event="on_input_text" default="$ABC"/>
         <image src="$img_test"/>
     </window>
 </layout>

@@ -164,7 +164,7 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, InputTextElement& ref)
     GetStringAttrib(pXml, "label", ref.Label);
     GetStringAttrib(pXml, "hint", ref.Hint);
     GetStringAttrib(pXml, "event", ref.Event);
-    GetStringAttrib(pXml, "default", ref.Var);
+    GetStringAttrib(pXml, "default", ref.Default);
 }
 
 void guitar::FromXML(const tinyxml2::XMLElement* pXml, MenuItemElement& ref)
@@ -189,7 +189,7 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, CheckboxElement& ref)
 {
     GetStringAttrib(pXml, "label", ref.Label);
     GetStringAttrib(pXml, "event", ref.Event);
-    GetBoolAttrib(pXml, "default", ref.Var);
+    GetStringAttrib(pXml, "default", ref.Default);
 }
 
 void guitar::FromXML(const tinyxml2::XMLElement* pXml, TextElement& ref)

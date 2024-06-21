@@ -61,37 +61,27 @@ void guitar::Application::UseLayout(const std::string& id)
     }
 }
 
-void guitar::Application::SetFullscreen(const bool active)
+void guitar::Application::ToggleFullscreen()
 {
-    if (active == m_Fullscreen)
-        return;
-
-    assert(!m_InFrame);
-
-    if (active)
+    if (m_PState)
     {
-        glfwGetWindowPos(m_PHandle, &m_SavedState.X, &m_SavedState.Y);
-        glfwGetWindowSize(m_PHandle, &m_SavedState.Width, &m_SavedState.Height);
+        glfwSetWindowMonitor(m_PHandle, nullptr, m_PState->X, m_PState->Y, m_PState->Width, m_PState->Height, GLFW_DONT_CARE);
+        glfwSetWindowAttrib(m_PHandle, GLFW_RESIZABLE, GLFW_TRUE);
 
-        const auto monitor = glfwGetPrimaryMonitor();
-        const auto vidMode = glfwGetVideoMode(monitor);
-
-        int x, y;
-        glfwGetMonitorPos(monitor, &x, &y);
-
-        glfwSetWindowMonitor(m_PHandle, monitor, x, y, vidMode->width, vidMode->height, vidMode->refreshRate);
+        delete m_PState;
+        m_PState = nullptr;
     }
     else
     {
-        glfwSetWindowMonitor(m_PHandle, nullptr, m_SavedState.X, m_SavedState.Y, m_SavedState.Width, m_SavedState.Height, GLFW_DONT_CARE);
+        m_PState = new WindowState();
+        glfwGetWindowPos(m_PHandle, &m_PState->X, &m_PState->Y);
+        glfwGetWindowSize(m_PHandle, &m_PState->Width, &m_PState->Height);
+
+        const auto pMonitor = glfwGetPrimaryMonitor();
+        const auto pMode = glfwGetVideoMode(pMonitor);
+        glfwSetWindowMonitor(m_PHandle, nullptr, 0, 0, pMode->width, pMode->height, pMode->refreshRate);
+        glfwSetWindowAttrib(m_PHandle, GLFW_RESIZABLE, GLFW_FALSE);
     }
-
-    m_Fullscreen = active;
-}
-
-void guitar::Application::ToggleFullscreen()
-{
-    SetFullscreen(!m_Fullscreen);
 }
 
 guitar::ResourceManager& guitar::Application::Resources()

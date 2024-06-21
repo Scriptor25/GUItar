@@ -110,6 +110,11 @@ void guitar::CustomElement::Draw(ResourceManager&, EventManager& events)
     events.Invoke(Event, &payload);
 }
 
+void guitar::InputTextElement::Register(ResourceManager& resources, EventManager& events)
+{
+    Var = resources.GetString(events, Default);
+}
+
 void guitar::InputTextElement::Draw(ResourceManager& resources, EventManager& events)
 {
     const auto label = resources.GetString(events, Label);

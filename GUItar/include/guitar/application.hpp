@@ -156,14 +156,6 @@ namespace guitar
         void UseLayout(const std::string& id);
 
         /**
-         * Switch to fullscreen or windowed mode. If the mode
-         * didn't change, the function does nothing.
-         *
-         * @param active if fullscreen should be active
-         */
-        void SetFullscreen(bool active);
-
-        /**
          * Toggle between fullscreen and windowed mode.
          */
         void ToggleFullscreen();
@@ -190,8 +182,7 @@ namespace guitar
         void Destroy();
 
         GLFWwindow* m_PHandle = nullptr;
-        WindowState m_SavedState{};
-        bool m_Fullscreen = false;
+        WindowState* m_PState = nullptr;
 
         ResourceManager m_Resources;
         EventManager m_Events;

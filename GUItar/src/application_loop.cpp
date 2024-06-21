@@ -1,3 +1,5 @@
+#define GLFW_INCLUDE_NONE
+
 #include <implot.h>
 #include <iostream>
 #include <backends/imgui_impl_glfw.h>

@@ -14,32 +14,6 @@ public:
     explicit Test(const int argc, const char** argv)
         : Application(argc, argv)
     {
-    }
-
-protected:
-    void OnStart() override
-    {
-        m_Image.StorePixels(100, 100, nullptr);
-
-        Events().Register("on_key", this, [this](const guitar::EventPayload* pPayload)
-        {
-            const auto& payload = *dynamic_cast<const guitar::KeyPayload*>(pPayload);
-
-            if (payload.Key == GLFW_KEY_ESCAPE && payload.Action == GLFW_RELEASE)
-            {
-                Close();
-                return true;
-            }
-
-            if (payload.Key == GLFW_KEY_F11 && payload.Action == GLFW_RELEASE)
-            {
-                Schedule([this] { ToggleFullscreen(); });
-                return true;
-            }
-
-            return false;
-        });
-
         Events().Register("test", this, [](const guitar::EventPayload*)
         {
             std::cout << "Hello World!" << std::endl;
@@ -94,6 +68,31 @@ protected:
             std::cout << "Input: " << payload.Result << std::endl;
             return true;
         });
+
+        Events().Register("ABC", this, [](const guitar::EventPayload* pPayload)
+        {
+            const auto& payload = *dynamic_cast<const guitar::StringPayload*>(pPayload);
+            payload.Result = "ABC";
+            return true;
+        });
+
+        Events().Register("close", this, [this](const guitar::EventPayload*)
+        {
+            Close();
+            return true;
+        });
+
+        Events().Register("fullscreen", this, [this](const guitar::EventPayload*)
+        {
+            Schedule([this] { ToggleFullscreen(); });
+            return true;
+        });
+    }
+
+protected:
+    void OnStart() override
+    {
+        m_Image.StorePixels(100, 100, nullptr);
     }
 
     void OnImGui() override

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <layout xmlns="ImGuiXML" id="demo" dockspace="true">
+    <menubar>
+        <menu label="File">
+            <item shortcut="escape|alt+f4" event="close">Exit</item>
+        </menu>
+        <menu label="Window">
+            <item shortcut="f11" event="fullscreen">Toggle Fullscreen</item>
+        </menu>
+    </menubar>
     <window name="Camera">
         <image src="logo"/>
     </window>

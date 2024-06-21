@@ -1,3 +1,5 @@
+#define GLFW_INCLUDE_NONE
+
 #include <algorithm>
 #include <imgui.h>
 #include <iomanip>
@@ -7,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include <guitar/events.hpp>
 #include <guitar/layout.hpp>
+#include <guitar/resources.hpp>
 
 guitar::Element::~Element() = default;
 
@@ -107,6 +110,11 @@ void guitar::MenuBarElement::Release(ResourceManager& resources, EventManager& e
 {
     for (const auto& menu : Menus)
         menu.Release(resources, events);
+}
+
+void guitar::CheckboxElement::Register(ResourceManager& resources, EventManager& events)
+{
+    Var = resources.GetString(events, Default) == "true";
 }
 
 std::map<std::string, guitar::TextFunc> guitar::TextElement::FUNCS = {
