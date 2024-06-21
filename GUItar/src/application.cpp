@@ -41,13 +41,22 @@ void guitar::Application::UseLayout(const std::string& id)
 {
     assert(!m_InFrame);
 
+    const std::filesystem::path iniDirectory = m_Resources.GetConfig().IniDirectory;
+    create_directories(iniDirectory);
+
     if (m_PLayout)
-        ImGui::SaveIniSettingsToDisk(m_PLayout->ID.c_str());
+    {
+        const auto iniPath = iniDirectory / m_PLayout->ID;
+        ImGui::SaveIniSettingsToDisk(iniPath.string().c_str());
+    }
 
     m_PLayout = m_Resources.GetLayout(id);
 
     if (m_PLayout)
-        ImGui::LoadIniSettingsFromDisk(m_PLayout->ID.c_str());
+    {
+        const auto iniPath = iniDirectory / m_PLayout->ID;
+        ImGui::LoadIniSettingsFromDisk(iniPath.string().c_str());
+    }
 }
 
 void guitar::Application::SetFullscreen(const bool active)

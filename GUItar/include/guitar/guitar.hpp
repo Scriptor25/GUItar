@@ -30,5 +30,6 @@ namespace guitar
         int Width = 0;
         int Height = 0;
         bool Viewports = true;
+        std::string IniDirectory = "ini";
     };
 }

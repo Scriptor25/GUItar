@@ -39,6 +39,7 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, AppConfig& ref)
     GetIntAttrib(pXml, "width", ref.Width);
     GetIntAttrib(pXml, "height", ref.Height);
     GetBoolAttrib(pXml, "viewports", ref.Viewports);
+    GetStringAttrib(pXml, "iniDirectory", ref.IniDirectory);
 }
 
 void guitar::FromXML(const tinyxml2::XMLElement* pXml, Layout& ref)
