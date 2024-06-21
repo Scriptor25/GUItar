@@ -48,6 +48,7 @@ void guitar::Application::UseLayout(const std::string& id)
     {
         const auto iniPath = iniDirectory / m_PLayout->ID;
         ImGui::SaveIniSettingsToDisk(iniPath.string().c_str());
+        m_PLayout->Release(m_Resources, m_Events);
     }
 
     m_PLayout = m_Resources.GetLayout(id);
@@ -56,6 +57,7 @@ void guitar::Application::UseLayout(const std::string& id)
     {
         const auto iniPath = iniDirectory / m_PLayout->ID;
         ImGui::LoadIniSettingsFromDisk(iniPath.string().c_str());
+        m_PLayout->Register(m_Resources, m_Events);
     }
 }
 

@@ -10,15 +10,7 @@ namespace guitar
 
     struct Layout;
     struct Element;
-    struct DockSpaceElement;
-    struct DemoElement;
-    struct WindowElement;
-    struct ButtonElement;
-    struct ImageElement;
-    struct TextElement;
-    struct SimpleElement;
-    struct ComboElement;
-    struct CustomElement;
+    struct Menu;
 
     struct Image;
 

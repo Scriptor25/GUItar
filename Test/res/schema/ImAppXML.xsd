@@ -9,6 +9,7 @@
             <xs:attribute name="width" type="xs:int" default="0"/>
             <xs:attribute name="height" type="xs:int" default="0"/>
             <xs:attribute name="viewports" type="xs:boolean" default="true"/>
+            <xs:attribute name="iniDirectory" type="xs:string" default="ini"/>
         </xs:complexType>
     </xs:element>
 

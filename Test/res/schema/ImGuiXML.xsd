@@ -47,6 +47,7 @@
                     <xs:attribute name="label" type="xs:string" use="required"/>
                     <xs:attribute name="hint" type="xs:string"/>
                     <xs:attribute name="event" type="xs:string"/>
+                    <xs:attribute name="default" type="xs:string"/>
                 </xs:complexType>
             </xs:element>
         </xs:choice>
@@ -54,7 +55,29 @@
 
     <xs:complexType name="toplevel">
         <xs:choice>
-            <xs:element name="dockspace"/>
+            <xs:element name="menubar">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="menu">
+                            <xs:complexType>
+                                <xs:choice>
+                                    <xs:element name="item">
+                                        <xs:complexType>
+                                            <xs:complexContent>
+                                                <xs:extension base="xs:string">
+                                                    <xs:attribute name="event" type="xs:string"/>
+                                                    <xs:attribute name="shortcut" type="xs:string"/>
+                                                </xs:extension>
+                                            </xs:complexContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:choice>
+                                <xs:attribute name="label" type="xs:string" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="demo"/>
             <xs:element name="window">
                 <xs:complexType>
@@ -73,6 +96,7 @@
             <xs:complexContent>
                 <xs:extension base="toplevel">
                     <xs:attribute name="id" type="xs:string" use="required"/>
+                    <xs:attribute name="dockspace" type="xs:boolean" default="false"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>

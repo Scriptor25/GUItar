@@ -6,13 +6,9 @@
 
 void guitar::Layout::Draw(ResourceManager& resources, EventManager& events) const
 {
+    if (Dockspace) ImGui::DockSpaceOverViewport();
     for (const auto& element : Elements)
         element->Draw(resources, events);
-}
-
-void guitar::DockSpaceElement::Draw(ResourceManager&, EventManager&)
-{
-    ImGui::DockSpaceOverViewport();
 }
 
 void guitar::DemoElement::Draw(ResourceManager&, EventManager&)
@@ -123,6 +119,40 @@ void guitar::InputTextElement::Draw(ResourceManager& resources, EventManager& ev
     {
         const StringPayload payload(this, Var);
         events.Invoke(Event, &payload);
+    }
+}
+
+void guitar::MenuItemElement::Draw(ResourceManager& resources, EventManager& events)
+{
+    const auto label = resources.GetString(events, Label);
+    const auto shortcut = Shortcut.String();
+
+    if (ImGui::MenuItem(label.c_str(), shortcut.c_str()))
+    {
+        const EventPayload payload(this);
+        events.Invoke(Event, &payload);
+    }
+}
+
+void guitar::Menu::Draw(ResourceManager& resources, EventManager& events) const
+{
+    const auto label = resources.GetString(events, Label);
+
+    if (ImGui::BeginMenu(label.c_str()))
+    {
+        for (const auto& item : Elements)
+            item->Draw(resources, events);
+        ImGui::EndMenu();
+    }
+}
+
+void guitar::MenuBarElement::Draw(ResourceManager& resources, EventManager& events)
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        for (const auto& menu : Menus)
+            menu.Draw(resources, events);
+        ImGui::EndMainMenuBar();
     }
 }
 

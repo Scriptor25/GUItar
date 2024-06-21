@@ -14,6 +14,9 @@ namespace guitar
     {
         virtual ~Element();
 
+        virtual void Register(ResourceManager& resources, EventManager& events);
+        virtual void Release(ResourceManager& resources, EventManager& events);
+
         virtual void Draw(ResourceManager& resources, EventManager& events) = 0;
     };
 
@@ -25,15 +28,14 @@ namespace guitar
         Layout& operator=(const Layout&) = delete;
         Layout& operator=(Layout&&) noexcept;
 
+        void Register(ResourceManager& resources, EventManager& events) const;
+        void Release(ResourceManager& resources, EventManager& events) const;
+
         void Draw(ResourceManager& resources, EventManager& events) const;
 
         std::string ID;
+        bool Dockspace = false;
         std::vector<std::unique_ptr<Element>> Elements;
-    };
-
-    struct DockSpaceElement : Element
-    {
-        void Draw(ResourceManager& resources, EventManager& events) override;
     };
 
     struct DemoElement : Element
@@ -43,6 +45,9 @@ namespace guitar
 
     struct WindowElement : Element
     {
+        void Register(ResourceManager& resources, EventManager& events) override;
+        void Release(ResourceManager& resources, EventManager& events) override;
+
         void Draw(ResourceManager& resources, EventManager& events) override;
 
         std::string Name;
@@ -89,6 +94,9 @@ namespace guitar
 
     struct ComboElement : Element
     {
+        void Register(ResourceManager& resources, EventManager& events) override;
+        void Release(ResourceManager& resources, EventManager& events) override;
+
         void Draw(ResourceManager& resources, EventManager& events) override;
 
         std::string Label;
@@ -114,6 +122,59 @@ namespace guitar
         std::string Var;
     };
 
+    struct ShortcutInfo
+    {
+        int Key = 0;
+        bool Ctrl = false;
+        bool Alt = false;
+        bool Super = false;
+        bool Shift = false;
+    };
+
+    struct KeyShortcut
+    {
+        KeyShortcut();
+        explicit KeyShortcut(const std::string&);
+
+        [[nodiscard]] bool Matches(const struct KeyPayload& payload) const;
+        [[nodiscard]] std::string String() const;
+
+        std::vector<ShortcutInfo> Infos;
+    };
+
+    struct MenuItemElement : Element
+    {
+        void Register(ResourceManager& resources, EventManager& events) override;
+        void Release(ResourceManager& resources, EventManager& events) override;
+
+        void Draw(ResourceManager& resources, EventManager& events) override;
+
+        std::string Label;
+        std::string Event;
+        KeyShortcut Shortcut;
+    };
+
+    struct Menu
+    {
+        void Register(ResourceManager& resources, EventManager& events) const;
+        void Release(ResourceManager& resources, EventManager& events) const;
+
+        void Draw(ResourceManager& resources, EventManager& events) const;
+
+        std::string Label;
+        std::vector<std::unique_ptr<Element>> Elements;
+    };
+
+    struct MenuBarElement : Element
+    {
+        void Register(ResourceManager& resources, EventManager& events) override;
+        void Release(ResourceManager& resources, EventManager& events) override;
+
+        void Draw(ResourceManager& resources, EventManager& events) override;
+
+        std::vector<Menu> Menus;
+    };
+
     struct CheckboxElement : Element
     {
         void Draw(ResourceManager& resources, EventManager& events) override;
@@ -121,6 +182,6 @@ namespace guitar
         std::string Label;
         std::string Event;
 
-        bool Var;
+        bool Var = false;
     };
 }

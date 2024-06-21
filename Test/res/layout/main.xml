@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<layout xmlns="ImGuiXML" id="main">
-    <dockspace/>
+<layout xmlns="ImGuiXML" id="main" dockspace="true">
+    <menubar>
+        <menu label="File">
+            <item shortcut="ctrl+h" event="test">Hello World!</item>
+            <item shortcut="escape|alt+f4">Exit</item>
+        </menu>
+    </menubar>
     <demo/>
     <window name="Test">
         <text>Hello World!</text>
