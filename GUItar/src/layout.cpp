@@ -204,7 +204,9 @@ guitar::KeyShortcut::KeyShortcut(const std::string& str)
         auto& [Key, Ctrl, Alt, Super, Shift] = Infos.emplace_back();
         for (auto info_range : std::views::split(range, '+'))
         {
-            std::string info_str(info_range.begin(), info_range.end());
+            std::string_view info_str_view(info_range.data(), info_range.size());
+
+            std::string info_str(info_str_view);
             std::ranges::transform(info_str, info_str.begin(), [](const unsigned char c) { return std::toupper(c); });
 
             if (info_str == "CTRL") Ctrl = true;
