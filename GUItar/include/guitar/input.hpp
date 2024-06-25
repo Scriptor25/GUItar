@@ -42,7 +42,7 @@ namespace guitar
     class InputManager
     {
     public:
-        static Joystick GetJoystick(int index);
+        static Joystick GetJoystick(int jid);
         static std::map<int, std::string> ListJoysticks();
 
         bool GetKey(int key);

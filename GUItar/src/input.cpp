@@ -22,18 +22,18 @@ void guitar::KeyState::Update(const bool state)
     Now = state;
 }
 
-guitar::Joystick guitar::InputManager::GetJoystick(const int index)
+guitar::Joystick guitar::InputManager::GetJoystick(const int jid)
 {
-    if (index < GLFW_JOYSTICK_1 || index > GLFW_JOYSTICK_16 || !glfwJoystickPresent(index))
+    if (jid < GLFW_JOYSTICK_1 || jid > GLFW_JOYSTICK_16 || !glfwJoystickPresent(jid))
         return {};
 
     Joystick joystick;
-    joystick.Name = glfwGetJoystickName(index);
+    joystick.Name = glfwGetJoystickName(jid);
 
     int axis_count, button_count, hat_count;
-    const auto axes = glfwGetJoystickAxes(index, &axis_count);
-    const auto buttons = glfwGetJoystickButtons(index, &button_count);
-    const auto hats = glfwGetJoystickHats(index, &hat_count);
+    const auto axes = glfwGetJoystickAxes(jid, &axis_count);
+    const auto buttons = glfwGetJoystickButtons(jid, &button_count);
+    const auto hats = glfwGetJoystickHats(jid, &hat_count);
 
     joystick.Axes.resize(axis_count);
     for (int i = 0; i < axis_count; ++i)
@@ -88,13 +88,14 @@ void guitar::InputManager::CreateAxis(const std::string& id, const std::vector<A
 
 float guitar::InputManager::GetAxis(const int jid, const std::string& id)
 {
-    float result = 0.0f;
-
     const auto [Name, Axes, Buttons, Hats] = GetJoystick(jid);
+    if (Name.empty())
+        return 0.0f;
 
+    float accum = 0.0f;
     for (const auto& [Type, Index, Negate] : m_Axes[id])
     {
-        float value = 0.0f;
+        float value;
         switch (Type)
         {
         case AxisType_Key:
@@ -106,13 +107,14 @@ float guitar::InputManager::GetAxis(const int jid, const std::string& id)
         case AxisType_Axis:
             value = Axes[Index];
             break;
+        default:
+            continue;
         }
 
-        if (Negate) result -= value;
-        else result += value;
+        accum += Negate ? -value : value;
     }
 
-    return result;
+    return accum;
 }
 
 void guitar::InputManager::Update(GLFWwindow* pWindow)
