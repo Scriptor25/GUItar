@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <guitar/events.hpp>
 #include <guitar/guitar.hpp>
 
 namespace guitar
@@ -139,7 +140,7 @@ namespace guitar
         KeyShortcut();
         explicit KeyShortcut(const std::string&);
 
-        [[nodiscard]] bool Matches(const struct KeyPayload& payload) const;
+        [[nodiscard]] bool Matches(const ImmutableEvent<KeyPayload>& event) const;
         [[nodiscard]] std::string String() const;
 
         std::vector<ShortcutInfo> Infos;

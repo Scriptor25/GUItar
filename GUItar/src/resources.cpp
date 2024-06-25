@@ -104,7 +104,7 @@ std::string guitar::ResourceManager::GetString(EventManager& events, const std::
     if (str[0] == '$')
     {
         std::string result;
-        const StringPayload payload(this, result);
+        const MutableEvent payload(this, result);
         events.Invoke(str.substr(1), &payload);
         return result;
     }

@@ -71,11 +71,11 @@ void guitar::ComboElement::Release(ResourceManager& resources, EventManager& eve
 
 void guitar::MenuItemElement::Register(ResourceManager& resources, EventManager& events)
 {
-    events.Register("on_key", this, [this, &events](const EventPayload* pPayload)
+    events.Register("on_key", this, [this, &events](const EventBase* pPayload)
     {
-        if (const auto& payload = *dynamic_cast<const KeyPayload*>(pPayload); Shortcut.Matches(payload))
+        if (const auto& payload = *dynamic_cast<const ImmutableEvent<KeyPayload>*>(pPayload); Shortcut.Matches(payload))
         {
-            const EventPayload evt_payload(this);
+            const EventBase evt_payload(this);
             events.Invoke(Event, &evt_payload);
             return true;
         }
@@ -248,18 +248,18 @@ guitar::KeyShortcut::KeyShortcut(const std::string& str)
     }
 }
 
-bool guitar::KeyShortcut::Matches(const KeyPayload& payload) const
+bool guitar::KeyShortcut::Matches(const ImmutableEvent<KeyPayload>& event) const
 {
-    if (payload.Action != GLFW_RELEASE)
+    if (event.Payload.Action != GLFW_RELEASE)
         return false;
 
-    return std::ranges::any_of(Infos, [payload](const ShortcutInfo& info)
+    return std::ranges::any_of(Infos, [event](const ShortcutInfo& info)
     {
-        return info.Key == payload.Key
-                && info.Ctrl == ((payload.Mods & GLFW_MOD_CONTROL) != 0)
-                && info.Alt == ((payload.Mods & GLFW_MOD_ALT) != 0)
-                && info.Super == ((payload.Mods & GLFW_MOD_SUPER) != 0)
-                && info.Shift == ((payload.Mods & GLFW_MOD_SHIFT) != 0);
+        return info.Key == event.Payload.KeyCode
+                && info.Ctrl == ((event.Payload.Mods & GLFW_MOD_CONTROL) != 0)
+                && info.Alt == ((event.Payload.Mods & GLFW_MOD_ALT) != 0)
+                && info.Super == ((event.Payload.Mods & GLFW_MOD_SUPER) != 0)
+                && info.Shift == ((event.Payload.Mods & GLFW_MOD_SHIFT) != 0);
     });
 }
 

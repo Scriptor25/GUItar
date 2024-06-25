@@ -16,7 +16,7 @@ void guitar::Joystick::Dump()
     std::cout << std::endl;
 }
 
-void guitar::KeyState::Next(const bool state)
+void guitar::KeyState::Update(const bool state)
 {
     Pre = Now;
     Now = state;
@@ -81,9 +81,43 @@ bool guitar::InputManager::GetKeyRepeat(const int key)
     return m_Keys[key].Pre && m_Keys[key].Now;
 }
 
+void guitar::InputManager::CreateAxis(const std::string& id, const std::vector<AxisConfig>& config)
+{
+    m_Axes[id] = config;
+}
+
+float guitar::InputManager::GetAxis(const int jid, const std::string& id)
+{
+    float result = 0.0f;
+
+    const auto [Name, Axes, Buttons, Hats] = GetJoystick(jid);
+
+    for (const auto& [Type, Index, Negate] : m_Axes[id])
+    {
+        float value = 0.0f;
+        switch (Type)
+        {
+        case AxisType_Key:
+            value = GetKey(Index) ? 1.0f : 0.0f;
+            break;
+        case AxisType_Button:
+            value = Buttons[Index] ? 1.0f : 0.0f;
+            break;
+        case AxisType_Axis:
+            value = Axes[Index];
+            break;
+        }
+
+        if (Negate) result -= value;
+        else result += value;
+    }
+
+    return result;
+}
+
 void guitar::InputManager::Update(GLFWwindow* pWindow)
 {
     for (int i = 32; i < GLFW_KEY_LAST; ++i)
         if (const int state = glfwGetKey(pWindow, i); state != GLFW_INVALID_ENUM)
-            m_Keys[i].Next(state);
+            m_Keys[i].Update(state);
 }

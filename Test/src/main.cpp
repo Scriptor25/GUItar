@@ -4,9 +4,9 @@
 #include <guitar/image.hpp>
 #include <implot.h>
 
-static const char* const LABEL_IDS[] = {"Hello", "World", "!"};
-static const float VALUES[] = {0.5f, 0.3f, 0.2f};
-static const int LABEL_COUNT = std::size(LABEL_IDS);
+static constexpr const char* LABEL_IDS[] = {"Hello", "World", "!"};
+static constexpr float VALUES[] = {0.5f, 0.3f, 0.2f};
+static constexpr int LABEL_COUNT = std::size(LABEL_IDS);
 
 class Test : public guitar::Application
 {
@@ -14,35 +14,35 @@ public:
     explicit Test(const int argc, const char** argv)
         : Application(argc, argv)
     {
-        Events().Register("test", this, [](const guitar::EventPayload*)
+        Events().Register("test", this, [](const guitar::EventBase*)
         {
             std::cout << "Hello World!" << std::endl;
             return true;
         });
 
-        Events().Register("img_test", this, [this](const guitar::EventPayload* pPayload)
+        Events().Register("img_test", this, [this](const guitar::EventBase* pEvent)
         {
-            const auto& payload = *dynamic_cast<const guitar::ImagePayload*>(pPayload);
-            payload.Width = m_Image.Width;
-            payload.Height = m_Image.Height;
-            payload.TextureID = reinterpret_cast<ImTextureID>(m_Image.Texture);
+            auto& event = *dynamic_cast<const guitar::ImmutableEvent<guitar::ImagePayload>*>(pEvent);
+            event.Payload.Width = m_Image.Width;
+            event.Payload.Height = m_Image.Height;
+            event.Payload.TextureID = reinterpret_cast<ImTextureID>(m_Image.Texture);
             return true;
         });
 
-        Events().Register("open_demo", this, [this](const guitar::EventPayload*)
+        Events().Register("open_demo", this, [this](const guitar::EventBase*)
         {
             Schedule([this] { UseLayout("demo"); });
             return true;
         });
 
-        Events().Register("selected", this, [this](const guitar::EventPayload* pPayload)
+        Events().Register("selected", this, [this](const guitar::EventBase* pEvent)
         {
-            const auto& payload = *dynamic_cast<const guitar::StringPayload*>(pPayload);
-            payload.Result = m_Items[m_Selected];
+            auto& event = *dynamic_cast<const guitar::MutableEvent<std::string>*>(pEvent);
+            event.Payload = m_Items[m_Selected];
             return true;
         });
 
-        Events().Register("test_combo_body", this, [this](const guitar::EventPayload*)
+        Events().Register("test_combo_body", this, [this](const guitar::EventBase*)
         {
             for (int i = 0; i < m_Items.size(); ++i)
             {
@@ -60,29 +60,29 @@ public:
             return true;
         });
 
-        Events().Register("on_input_text", this, [this](const guitar::EventPayload* pPayload)
+        Events().Register("on_input_text", this, [this](const guitar::EventBase* pEvent)
         {
-            const auto& payload = *dynamic_cast<const guitar::StringPayload*>(pPayload);
-            if (payload.Result.empty())
+            auto& event = *dynamic_cast<const guitar::ImmutableEvent<std::string>*>(pEvent);
+            if (event.Payload.empty())
                 return false;
-            std::cout << "Input: " << payload.Result << std::endl;
+            std::cout << "Input: " << event.Payload << std::endl;
             return true;
         });
 
-        Events().Register("ABC", this, [](const guitar::EventPayload* pPayload)
+        Events().Register("ABC", this, [](const guitar::EventBase* pEvent)
         {
-            const auto& payload = *dynamic_cast<const guitar::StringPayload*>(pPayload);
-            payload.Result = "ABC";
+            auto& event = *dynamic_cast<const guitar::MutableEvent<std::string>*>(pEvent);
+            event.Payload = "ABC";
             return true;
         });
 
-        Events().Register("close", this, [this](const guitar::EventPayload*)
+        Events().Register("close", this, [this](const guitar::EventBase*)
         {
             Close();
             return true;
         });
 
-        Events().Register("fullscreen", this, [this](const guitar::EventPayload*)
+        Events().Register("fullscreen", this, [this](const guitar::EventBase*)
         {
             Schedule([this] { ToggleFullscreen(); });
             return true;

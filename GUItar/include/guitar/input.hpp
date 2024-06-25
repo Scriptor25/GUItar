@@ -2,7 +2,6 @@
 
 #include <map>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 namespace guitar
@@ -20,10 +19,24 @@ namespace guitar
 
     struct KeyState
     {
-        void Next(bool state);
+        void Update(bool state);
 
         bool Now;
         bool Pre;
+    };
+
+    enum AxisType
+    {
+        AxisType_Key,
+        AxisType_Button,
+        AxisType_Axis,
+    };
+
+    struct AxisConfig
+    {
+        AxisType Type;
+        int Index;
+        bool Negate;
     };
 
     class InputManager
@@ -37,9 +50,14 @@ namespace guitar
         bool GetKeyRelease(int key);
         bool GetKeyRepeat(int key);
 
+        void CreateAxis(const std::string& id, const std::vector<AxisConfig>& config);
+        float GetAxis(int jid, const std::string& id);
+
         void Update(GLFWwindow* pWindow);
 
     private:
-        std::unordered_map<int, KeyState> m_Keys;
+        std::map<int, KeyState> m_Keys;
+
+        std::map<std::string, std::vector<AxisConfig>> m_Axes;
     };
 }

@@ -24,12 +24,14 @@ void guitar::Application::Close() const
 
 void guitar::Application::OnKey(const int key, const int scancode, const int action, const int mods)
 {
-    m_Events.Invoke("on_key", new KeyPayload(this, key, scancode, action, mods));
+    const ImmutableEvent event(this, KeyPayload{key, scancode, action, mods});
+    m_Events.Invoke("on_key", &event);
 }
 
 void guitar::Application::OnSize(const int width, const int height)
 {
-    m_Events.Invoke("on_size", new SizePayload(this, width, height));
+    const ImmutableEvent event(this, SizePayload{width, height});
+    m_Events.Invoke("on_size", &event);
 }
 
 void guitar::Application::Schedule(const ScheduleTask& task)

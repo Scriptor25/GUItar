@@ -31,8 +31,8 @@ void guitar::ButtonElement::Draw(ResourceManager& resources, EventManager& event
     if (ImGui::Button(text.c_str()))
         if (!Event.empty())
         {
-            const EventPayload payload(this);
-            events.Invoke(Event, &payload);
+            const EventBase event(this);
+            events.Invoke(Event, &event);
         }
 }
 
@@ -43,7 +43,7 @@ void guitar::ImageElement::Draw(ResourceManager& resources, EventManager& events
 
     if (Source[0] == '$')
     {
-        const ImagePayload payload(this, texture_id, width, height);
+        const ImmutableEvent payload(this, ImagePayload{texture_id, width, height});
         events.Invoke(Source.substr(1), &payload);
     }
     else
@@ -106,7 +106,7 @@ void guitar::ComboElement::Draw(ResourceManager& resources, EventManager& events
 
 void guitar::CustomElement::Draw(ResourceManager&, EventManager& events)
 {
-    const EventPayload payload(this);
+    const EventBase payload(this);
     events.Invoke(Event, &payload);
 }
 
@@ -122,7 +122,7 @@ void guitar::InputTextElement::Draw(ResourceManager& resources, EventManager& ev
 
     if (ImGui::InputTextWithHint(label.c_str(), hint.c_str(), &Var, ImGuiInputTextFlags_EnterReturnsTrue))
     {
-        const StringPayload payload(this, Var);
+        const ImmutableEvent payload(this, Var);
         events.Invoke(Event, &payload);
     }
 }
@@ -134,7 +134,7 @@ void guitar::MenuItemElement::Draw(ResourceManager& resources, EventManager& eve
 
     if (ImGui::MenuItem(label.c_str(), shortcut.c_str()))
     {
-        const EventPayload payload(this);
+        const EventBase payload(this);
         events.Invoke(Event, &payload);
     }
 }
@@ -167,7 +167,7 @@ void guitar::CheckboxElement::Draw(ResourceManager& resources, EventManager& eve
 
     if (ImGui::Checkbox(label.c_str(), &Var))
     {
-        const EventPayload payload(this);
+        const EventBase payload(this);
         events.Invoke(Event, &payload);
     }
 }
