@@ -205,16 +205,31 @@ static std::map<std::string, int> keys
     {"MENU", GLFW_KEY_MENU},
 };
 
+std::vector<std::string> split(const std::string& str, const char delim)
+{
+    std::vector<std::string> substrs;
+    auto strcpy = str;
+
+    for (auto pos = strcpy.find(delim); pos != std::string::npos; pos = strcpy.find(delim))
+    {
+        if (auto substr = strcpy.substr(0, pos); !substr.empty())
+            substrs.push_back(substr);
+        strcpy = strcpy.substr(pos + 1);
+    }
+
+    if (!strcpy.empty())
+        substrs.push_back(strcpy);
+
+    return substrs;
+}
+
 guitar::KeyShortcut::KeyShortcut(const std::string& str)
 {
-    for (auto range : std::views::split(str, '|'))
+    for (const auto& substr : split(str, '|'))
     {
         auto& [Key, Ctrl, Alt, Super, Shift] = Infos.emplace_back();
-        for (auto info_range : std::views::split(range, '+'))
+        for (auto info_str : split(substr, '+'))
         {
-            std::string_view info_str_view(info_range.begin(), info_range.end());
-
-            std::string info_str(info_str_view);
             std::ranges::transform(info_str, info_str.begin(), [](const unsigned char c) { return std::toupper(c); });
 
             if (info_str == "CTRL") Ctrl = true;
