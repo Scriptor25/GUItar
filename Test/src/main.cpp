@@ -108,6 +108,11 @@ protected:
         ImGui::End();
     }
 
+    void OnFrame() override
+    {
+        std::cout << "Hello World!" << std::endl;
+    }
+
 private:
     guitar::Image m_Image;
 
