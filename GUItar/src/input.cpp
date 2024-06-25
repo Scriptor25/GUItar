@@ -89,8 +89,6 @@ void guitar::InputManager::CreateAxis(const std::string& id, const std::vector<A
 float guitar::InputManager::GetAxis(const int jid, const std::string& id)
 {
     const auto [Name, Axes, Buttons, Hats] = GetJoystick(jid);
-    if (Name.empty())
-        return 0.0f;
 
     float accum = 0.0f;
     for (const auto& [Type, Index, Negate] : m_Axes[id])
@@ -102,10 +100,10 @@ float guitar::InputManager::GetAxis(const int jid, const std::string& id)
             value = GetKey(Index) ? 1.0f : 0.0f;
             break;
         case AxisType_Button:
-            value = Buttons[Index] ? 1.0f : 0.0f;
+            value = Index >= 0 && Index < Buttons.size() && Buttons[Index] ? 1.0f : 0.0f;
             break;
         case AxisType_Axis:
-            value = Axes[Index];
+            value = Index >= 0 && Index < Axes.size() ? Axes[Index] : 0.0f;
             break;
         default:
             continue;
