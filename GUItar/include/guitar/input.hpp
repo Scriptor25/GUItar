@@ -6,17 +6,6 @@
 
 namespace guitar
 {
-    struct Joystick
-    {
-        void Dump();
-
-        std::string Name;
-
-        std::vector<float> Axes;
-        std::vector<unsigned char> Buttons;
-        std::vector<unsigned char> Hats;
-    };
-
     struct KeyState
     {
         void Update(bool state);
@@ -42,7 +31,7 @@ namespace guitar
     class InputManager
     {
     public:
-        static Joystick GetJoystick(int jid);
+        static GLFWgamepadstate GetJoystick(int jid, bool silent = false);
         static std::map<int, std::string> ListJoysticks();
 
         bool GetKey(int key);

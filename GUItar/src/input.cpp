@@ -4,50 +4,36 @@
 #include <GLFW/glfw3.h>
 #include <guitar/input.hpp>
 
-void guitar::Joystick::Dump()
-{
-    std::cout << Name << std::endl;
-    std::cout << "Axes: ";
-    for (const auto& axis : Axes) std::cout << axis << " ";
-    std::cout << std::endl << "Buttons: ";
-    for (const auto& button : Buttons) std::cout << (button ? "1" : "0") << " ";
-    std::cout << std::endl << "Hats: ";
-    for (const auto& hat : Hats) std::cout << (hat & GLFW_HAT_LEFT ? "L" : hat & GLFW_HAT_RIGHT ? "R" : "") << (hat & GLFW_HAT_UP ? "U" : hat & GLFW_HAT_DOWN ? "D" : "") << (hat == GLFW_HAT_CENTERED ? "C" : "") << " ";
-    std::cout << std::endl;
-}
-
 void guitar::KeyState::Update(const bool state)
 {
     Pre = Now;
     Now = state;
 }
 
-guitar::Joystick guitar::InputManager::GetJoystick(const int jid)
+GLFWgamepadstate guitar::InputManager::GetJoystick(const int jid, const bool silent)
 {
-    if (jid < GLFW_JOYSTICK_1 || jid > GLFW_JOYSTICK_16 || !glfwJoystickPresent(jid))
+    if (jid < GLFW_JOYSTICK_1 || jid > GLFW_JOYSTICK_16)
+    {
+        std::cerr << "Joystick index out of range [0;15]: " << jid << std::endl;
         return {};
+    }
 
-    Joystick joystick;
-    joystick.Name = glfwGetJoystickName(jid);
+    if (!glfwJoystickPresent(jid))
+    {
+        std::cerr << "Joystick " << jid << " is not present" << std::endl;
+        return {};
+    }
 
-    int axis_count, button_count, hat_count;
-    const auto axes = glfwGetJoystickAxes(jid, &axis_count);
-    const auto buttons = glfwGetJoystickButtons(jid, &button_count);
-    const auto hats = glfwGetJoystickHats(jid, &hat_count);
+    if (!glfwJoystickIsGamepad(jid))
+    {
+        std::cerr << "Joystick " << jid << " is not a gamepad" << std::endl;
+        return {};
+    }
 
-    joystick.Axes.resize(axis_count);
-    for (int i = 0; i < axis_count; ++i)
-        joystick.Axes[i] = axes[i];
+    GLFWgamepadstate state;
+    glfwGetGamepadState(jid, &state);
 
-    joystick.Buttons.resize(button_count);
-    for (int i = 0; i < button_count; ++i)
-        joystick.Buttons[i] = buttons[i];
-
-    joystick.Hats.resize(hat_count);
-    for (int i = 0; i < hat_count; ++i)
-        joystick.Hats[i] = hats[i];
-
-    return joystick;
+    return state;
 }
 
 std::map<int, std::string> guitar::InputManager::ListJoysticks()
@@ -88,7 +74,7 @@ void guitar::InputManager::CreateAxis(const std::string& id, const std::vector<A
 
 float guitar::InputManager::GetAxis(const int jid, const std::string& id)
 {
-    const auto [Name, Axes, Buttons, Hats] = GetJoystick(jid);
+    const auto [Buttons, Axes] = GetJoystick(jid, true);
 
     float accum = 0.0f;
     for (const auto& [Type, Index, Negate] : m_Axes[id])
@@ -100,10 +86,10 @@ float guitar::InputManager::GetAxis(const int jid, const std::string& id)
             value = GetKey(Index) ? 1.0f : 0.0f;
             break;
         case AxisType_Button:
-            value = Index >= 0 && Index < Buttons.size() && Buttons[Index] ? 1.0f : 0.0f;
+            value = Index >= 0 && Index < std::size(Buttons) && Buttons[Index] == GLFW_PRESS ? 1.0f : 0.0f;
             break;
         case AxisType_Axis:
-            value = Index >= 0 && Index < Axes.size() ? Axes[Index] : 0.0f;
+            value = Index >= 0 && Index < std::size(Axes) ? Axes[Index] : 0.0f;
             break;
         default:
             continue;
