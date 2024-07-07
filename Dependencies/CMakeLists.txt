@@ -17,3 +17,8 @@ file(GLOB imgui_src
 add_library(imgui STATIC ${imgui_src})
 target_include_directories(imgui PUBLIC ImGUI)
 target_link_libraries(imgui PUBLIC glfw)
+
+file(GLOB implot_src ImPlot/*.cpp)
+add_library(implot STATIC ${implot_src})
+target_include_directories(implot PUBLIC ImPlot)
+target_link_libraries(implot PUBLIC imgui)
