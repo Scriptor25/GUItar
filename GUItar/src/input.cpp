@@ -14,19 +14,19 @@ GLFWgamepadstate guitar::InputManager::GetJoystick(const int jid, const bool sil
 {
     if (jid < GLFW_JOYSTICK_1 || jid > GLFW_JOYSTICK_16)
     {
-        std::cerr << "Joystick index out of range [0;15]: " << jid << std::endl;
+        if (!silent) std::cerr << "Joystick index out of range [0;15]: " << jid << std::endl;
         return {};
     }
 
     if (!glfwJoystickPresent(jid))
     {
-        std::cerr << "Joystick " << jid << " is not present" << std::endl;
+        if (!silent) std::cerr << "Joystick " << jid << " is not present" << std::endl;
         return {};
     }
 
     if (!glfwJoystickIsGamepad(jid))
     {
-        std::cerr << "Joystick " << jid << " is not a gamepad" << std::endl;
+        if (!silent) std::cerr << "Joystick " << jid << " is not a gamepad" << std::endl;
         return {};
     }
 
