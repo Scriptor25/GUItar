@@ -14,10 +14,20 @@ namespace guitar
 
     void FromXML(const tinyxml2::XMLElement* pXml, AppConfig& ref);
     void FromXML(const tinyxml2::XMLElement* pXml, Layout& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, Element*& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, DockSpaceElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, DemoElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, WindowElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, Menu& ref);
+
+    void FromXML(const tinyxml2::XMLElement* pXml, std::unique_ptr<Element>& ref);
+
     void FromXML(const tinyxml2::XMLElement* pXml, ButtonElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, CheckboxElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, ComboElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, CustomElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, DemoElement& ref);
     void FromXML(const tinyxml2::XMLElement* pXml, ImageElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, InputTextElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, MenuItemElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, MenuBarElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, SimpleElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, TextElement& ref);
+    void FromXML(const tinyxml2::XMLElement* pXml, WindowElement& ref);
 }

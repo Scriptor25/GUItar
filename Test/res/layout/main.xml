@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout xmlns="ImGuiXML" id="main" dockspace="true">
+    <menubar>
+        <menu label="File">
+            <item shortcut="ctrl+h" event="test">Hello World!</item>
+            <item shortcut="escape|alt+f4" event="close">Exit</item>
+        </menu>
+        <menu label="Window">
+            <item shortcut="f11" event="fullscreen">Toggle Fullscreen</item>
+        </menu>
+    </menubar>
+    <demo/>
+    <window name="Test">
+        <text>Hello World!</text>
+        <separatorText>Buttons</separatorText>
+        <button event="test">Press me!</button>
+        <button>No event</button>
+        <button event="open_demo">Open Demo</button>
+        <separatorText>Image</separatorText>
+        <image src="logo"/>
+    </window>
+    <window name="Other Window">
+        <combo label="Test Combo##test" preview="$selected">
+            <custom event="test_combo_body"/>
+        </combo>
+        <inputText label="An Input Text" hint="enter some text and press enter" event="on_input_text" default="$ABC"/>
+        <image src="$img_test"/>
+    </window>
+</layout>

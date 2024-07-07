@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="ImGuiXML">
+
+    <xs:complexType name="primitive">
+        <xs:choice>
+            <xs:element name="button">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="event" type="xs:string"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="image">
+                <xs:complexType>
+                    <xs:attribute name="src" type="xs:string" use="required"/>
+                    <xs:attribute name="keepRatio" type="xs:boolean" default="true"/>
+                    <xs:attribute name="bounds" type="xs:string" default="-1;-1"/>
+                    <xs:attribute name="uv0" type="xs:string" default="0;0"/>
+                    <xs:attribute name="uv1" type="xs:string" default="1;1"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="text" type="xs:string"/>
+            <xs:element name="separatorText" type="xs:string"/>
+            <xs:element name="bullet"/>
+            <xs:element name="separator"/>
+            <xs:element name="spacing"/>
+            <xs:element name="newline"/>
+            <xs:element name="combo">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="primitive">
+                            <xs:attribute name="label" type="xs:string" use="required"/>
+                            <xs:attribute name="preview" type="xs:string"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="custom">
+                <xs:complexType>
+                    <xs:attribute name="event" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="inputText">
+                <xs:complexType>
+                    <xs:attribute name="label" type="xs:string" use="required"/>
+                    <xs:attribute name="hint" type="xs:string"/>
+                    <xs:attribute name="event" type="xs:string"/>
+                    <xs:attribute name="default" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="toplevel">
+        <xs:choice>
+            <xs:element name="menubar">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="menu">
+                            <xs:complexType>
+                                <xs:choice>
+                                    <xs:element name="item">
+                                        <xs:complexType>
+                                            <xs:complexContent>
+                                                <xs:extension base="xs:string">
+                                                    <xs:attribute name="event" type="xs:string"/>
+                                                    <xs:attribute name="shortcut" type="xs:string"/>
+                                                </xs:extension>
+                                            </xs:complexContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:choice>
+                                <xs:attribute name="label" type="xs:string" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="demo"/>
+            <xs:element name="window">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="primitive">
+                            <xs:attribute name="name" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:element name="layout">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="toplevel">
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                    <xs:attribute name="dockspace" type="xs:boolean" default="false"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

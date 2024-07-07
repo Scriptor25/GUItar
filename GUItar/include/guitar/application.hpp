@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <guitar/events.hpp>
 #include <guitar/guitar.hpp>
+#include <guitar/input.hpp>
 #include <guitar/resources.hpp>
 
 namespace guitar
@@ -70,6 +71,12 @@ namespace guitar
         void Launch();
 
         /**
+         *
+         * @return true if the application is launched and not closing
+         */
+        bool IsActive() const;
+
+        /**
          * Close the application.
          */
         void Close() const;
@@ -113,7 +120,10 @@ namespace guitar
 
         /**
          * This gets called every frame when ImGui expects input
-         * to be submitted.
+         * to be submitted. You can use this to customize your layout,
+         * although there also exists the @code custom@endcode xml element
+         * that is letting you insert your custom element anywhere. This
+         * uses the event system.
          */
         virtual void OnImGui();
 
@@ -146,14 +156,6 @@ namespace guitar
         void UseLayout(const std::string& id);
 
         /**
-         * Switch to fullscreen or windowed mode. If the mode
-         * didn't change, the function does nothing.
-         *
-         * @param active if fullscreen should be active
-         */
-        void SetFullscreen(bool active);
-
-        /**
          * Toggle between fullscreen and windowed mode.
          */
         void ToggleFullscreen();
@@ -172,17 +174,19 @@ namespace guitar
          */
         EventManager& Events();
 
+        InputManager& Input();
+
     private:
         void Init();
         void Loop();
         void Destroy();
 
         GLFWwindow* m_PHandle = nullptr;
-        WindowState m_SavedState{};
-        bool m_Fullscreen = false;
+        WindowState* m_PState = nullptr;
 
         ResourceManager m_Resources;
         EventManager m_Events;
+        InputManager m_Input;
 
         const Layout* m_PLayout = nullptr;
 

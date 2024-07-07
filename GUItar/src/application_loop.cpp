@@ -1,3 +1,6 @@
+#define GLFW_INCLUDE_NONE
+
+#include <implot.h>
 #include <iostream>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -37,7 +40,7 @@ void guitar::Application::Init()
     auto& config = m_Resources.GetConfig();
     OnInit(config);
 
-    if (config.Width == 0 || config.Height == 0)
+    if (config.Width <= 0 || config.Height <= 0)
     {
         const auto vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         if (config.Width == 0)
@@ -69,18 +72,24 @@ void guitar::Application::Init()
     }
 
     m_Resources.LoadAllImages();
-    UseLayout(config.Layout);
 
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     auto& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    if (config.Viewports) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigDockingTransparentPayload = true;
+
+    io.ConfigViewportsNoDecoration = true;
+    // io.ConfigViewportsNoTaskBarIcon = true;
 
     ImGui_ImplOpenGL3_Init();
     ImGui_ImplGlfw_InitForOpenGL(m_PHandle, true);
+
+    UseLayout(config.Layout);
 }
 
 void guitar::Application::Loop()
@@ -93,6 +102,9 @@ void guitar::Application::Loop()
             task();
         m_Tasks.clear();
 
+        // Update Input Manager
+        m_Input.Update(m_PHandle);
+
         OnFrame();
 
         m_InFrame = true;
@@ -103,6 +115,7 @@ void guitar::Application::Loop()
 
         if (m_PLayout)
             m_PLayout->Draw(m_Resources, m_Events);
+
         OnImGui();
 
         ImGui::Render();
@@ -120,10 +133,10 @@ void guitar::Application::Loop()
             glfwMakeContextCurrent(m_PHandle);
         }
 
+        m_InFrame = false;
+
         glfwSwapBuffers(m_PHandle);
         glfwPollEvents();
-
-        m_InFrame = false;
     }
 
     OnStop();
@@ -133,8 +146,11 @@ void guitar::Application::Destroy()
 {
     OnDestroy();
 
+    UseLayout(std::string());
+
     ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
     glfwDestroyWindow(m_PHandle);

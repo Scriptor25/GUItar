@@ -1,6 +1,6 @@
 #include <iostream>
 #include <tinyxml2.h>
-#include <guitar/image.hpp>
+#include <guitar/events.hpp>
 #include <guitar/layout.hpp>
 #include <guitar/resources.hpp>
 #include <guitar/xml.hpp>
@@ -10,21 +10,19 @@ guitar::ResourceManager::ResourceManager(const std::filesystem::path& executable
 {
 }
 
-void guitar::ResourceManager::CheckErrors() const
-{
-    if (m_Root.empty())
-        throw std::runtime_error("resource root is not initialized");
-}
-
 std::ifstream guitar::ResourceManager::Open(const std::string& name, const std::ios_base::openmode mode) const
 {
-    CheckErrors();
     return {m_Root / name, std::ios_base::in | mode};
+}
+
+void guitar::ResourceManager::LoadAllImages()
+{
+    for (auto& [key, image] : m_Images)
+        image.Load(*this);
 }
 
 void guitar::ResourceManager::Index()
 {
-    CheckErrors();
     IndexDirectory(m_Root);
 }
 
@@ -65,7 +63,7 @@ void guitar::ResourceManager::ParseLayout(const tinyxml2::XMLElement* pXml)
 {
     Layout layout;
     FromXML(pXml, layout);
-    m_Layouts[layout.ID] = layout;
+    m_Layouts[layout.ID] = std::move(layout);
 }
 
 void guitar::ResourceManager::ParseApp(const tinyxml2::XMLElement* pXml)
@@ -83,7 +81,7 @@ void guitar::ResourceManager::ParseImage(const tinyxml2::XMLElement* pXml)
     GetStringAttrib(pXml, "src", src);
     GetStringAttrib(pXml, "type", type); // TODO: differentiate between bitmap and vector images
 
-    m_Images[id] = std::make_shared<Image>(src);
+    m_Images[id] = Image(src);
 }
 
 guitar::AppConfig& guitar::ResourceManager::GetConfig()
@@ -91,18 +89,25 @@ guitar::AppConfig& guitar::ResourceManager::GetConfig()
     return m_App;
 }
 
-const guitar::Layout& guitar::ResourceManager::GetLayout(const std::string& id)
+const guitar::Layout* guitar::ResourceManager::GetLayout(const std::string& id)
 {
-    return m_Layouts[id];
+    return &m_Layouts[id];
 }
 
-std::shared_ptr<guitar::Image> guitar::ResourceManager::GetImage(const std::string& id)
+const guitar::Image* guitar::ResourceManager::GetImage(const std::string& id)
 {
-    return m_Images[id];
+    return &m_Images[id];
 }
 
-void guitar::ResourceManager::LoadAllImages()
+std::string guitar::ResourceManager::GetString(EventManager& events, const std::string& str) const
 {
-    for (const auto& [key, image] : m_Images)
-        image->Load(*this);
+    if (str[0] == '$')
+    {
+        std::string result;
+        const MutableEvent payload(this, result);
+        events.Invoke(str.substr(1), &payload);
+        return result;
+    }
+
+    return str;
 }

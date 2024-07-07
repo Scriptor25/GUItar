@@ -5,4 +5,5 @@ target_link_libraries(GUItar PUBLIC
         glfw
         libglew_static
         imgui
+        implot
 )

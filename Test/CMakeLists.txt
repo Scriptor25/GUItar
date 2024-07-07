@@ -4,4 +4,4 @@ target_include_directories(Test PRIVATE include)
 target_link_libraries(Test PRIVATE GUItar)
 
 install(TARGETS Test)
-install(DIRECTORY resources DESTINATION bin)
+install(DIRECTORY res DESTINATION bin)

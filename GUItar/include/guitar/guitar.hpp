@@ -10,13 +10,8 @@ namespace guitar
 
     struct Layout;
     struct Element;
-    struct DockSpaceElement;
-    struct DemoElement;
-    struct WindowElement;
-    struct ButtonElement;
-    struct ImageElement;
-    struct TextElement;
-    struct SimpleElement;
+    struct Menu;
+
     struct Image;
 
     struct AppConfig
@@ -26,5 +21,7 @@ namespace guitar
         std::string Layout = "main";
         int Width = 0;
         int Height = 0;
+        bool Viewports = true;
+        std::string IniDirectory = "ini";
     };
 }

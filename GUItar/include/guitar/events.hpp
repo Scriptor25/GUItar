@@ -7,57 +7,62 @@
 
 namespace guitar
 {
-    /**
-     * A payload containing information about an event.
-     * For simple events it only contains the source, for
-     * size or key callbacks you have to cast to a
-     * @code SizePayload@endcode or @code KeyPayload@endcode
-     * respectively.
-     */
-    struct EventPayload
+    struct SizePayload
     {
-        explicit EventPayload(void* pSource);
-
-        virtual ~EventPayload();
-
-        void* PSource;
-    };
-
-    /**
-     * Contains the new width and height along with the
-     * source of the event.
-     */
-    struct SizePayload : EventPayload
-    {
-        SizePayload(void* pSource, int width, int height);
-
         int Width;
         int Height;
     };
 
-    /**
-     * Contains the key code, scancode, action and mod key flags
-     * of a key event along with the source.
-     */
-    struct KeyPayload : EventPayload
+    struct KeyPayload
     {
-        KeyPayload(void* pSource, int key, int scancode, int action, int mods);
-
-        int Key;
-        int Scancode;
+        int KeyCode;
+        int ScanCode;
         int Action;
         int Mods;
     };
 
-    struct ImagePayload : EventPayload
+    struct ImagePayload
     {
-        ImagePayload(void* pSource, ImTextureID* pTextureID, int* pWidth, int* pHeight);
-
-        ImTextureID* PTextureID;
-        int *PWidth, *PHeight;
+        ImTextureID& TextureID;
+        int& Width;
+        int& Height;
     };
 
-    typedef std::function<bool(EventPayload* pPayload)> EventListener;
+    struct EventBase
+    {
+        explicit EventBase(const void* pSource);
+        virtual ~EventBase();
+
+        const void* PSource;
+    };
+
+    template <typename T>
+    struct ImmutableEvent : EventBase
+    {
+        ImmutableEvent(const void* pSource, const T& payload)
+            : EventBase(pSource), Payload(payload)
+        {
+        }
+
+        const T& Payload;
+    };
+
+    template <typename T>
+    struct MutableEvent : EventBase
+    {
+        MutableEvent(const void* pSource, T& payload)
+            : EventBase(pSource), Payload(payload)
+        {
+        }
+
+        T& Payload;
+    };
+
+    using SizeEvent = ImmutableEvent<SizePayload>;
+    using KeyEvent = ImmutableEvent<KeyPayload>;
+    using ImageEvent = ImmutableEvent<ImagePayload>;
+
+    typedef std::function<bool(const EventBase*)> EventListener;
 
     /**
      * The EventManager serves as a simple event system.
@@ -71,10 +76,10 @@ namespace guitar
          * Manually invoke an event.
          *
          * @param id the action id
-         * @param pPayload a payload containing event information
+         * @param pEvent a payload containing event information
          * @return if the event got captured by a listener
          */
-        bool Invoke(const std::string& id, EventPayload* pPayload);
+        bool Invoke(const std::string& id, const EventBase* pEvent);
 
         /**
          * Register a listener for an action, owned by a pointer.
