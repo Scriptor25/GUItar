@@ -230,7 +230,8 @@ guitar::KeyShortcut::KeyShortcut(const std::string& str)
         auto& [Key, Ctrl, Alt, Super, Shift] = Infos.emplace_back();
         for (auto info_str : split(substr, '+'))
         {
-            std::ranges::transform(info_str, info_str.begin(), [](const unsigned char c) { return std::toupper(c); });
+            for (auto& c : info_str)
+                c = std::toupper(c);
 
             if (info_str == "CTRL") Ctrl = true;
             else if (info_str == "ALT") Alt = true;
@@ -253,7 +254,7 @@ bool guitar::KeyShortcut::Matches(const ImmutableEvent<KeyPayload>& event) const
     if (event.Payload.Action != GLFW_RELEASE)
         return false;
 
-    return std::ranges::any_of(Infos, [event](const ShortcutInfo& info)
+    return std::any_of(Infos.begin(), Infos.end(), [&event](const ShortcutInfo& info)
     {
         return info.Key == event.Payload.KeyCode
                 && info.Ctrl == ((event.Payload.Mods & GLFW_MOD_CONTROL) != 0)
