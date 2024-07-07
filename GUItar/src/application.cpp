@@ -14,12 +14,12 @@ void guitar::Application::Launch()
 
 bool guitar::Application::IsActive() const
 {
-    return m_PHandle && !glfwWindowShouldClose(m_PHandle);
+    return m_Handle && !glfwWindowShouldClose(m_Handle);
 }
 
 void guitar::Application::Close() const
 {
-    glfwSetWindowShouldClose(m_PHandle, GLFW_TRUE);
+    glfwSetWindowShouldClose(m_Handle, GLFW_TRUE);
 }
 
 void guitar::Application::OnKey(const int key, const int scancode, const int action, const int mods)
@@ -46,43 +46,50 @@ void guitar::Application::UseLayout(const std::string& id)
     const std::filesystem::path iniDirectory = m_Resources.GetConfig().IniDirectory;
     create_directories(iniDirectory);
 
-    if (m_PLayout)
+    if (m_Layout)
     {
-        const auto iniPath = iniDirectory / m_PLayout->ID;
+        const auto iniPath = iniDirectory / m_Layout->ID;
         ImGui::SaveIniSettingsToDisk(iniPath.string().c_str());
-        m_PLayout->Release(m_Resources, m_Events);
+        m_Layout->Release(m_Resources, m_Events);
     }
 
-    m_PLayout = m_Resources.GetLayout(id);
+    m_Layout = m_Resources.GetLayout(id);
 
-    if (m_PLayout)
+    if (m_Layout)
     {
-        const auto iniPath = iniDirectory / m_PLayout->ID;
+        const auto iniPath = iniDirectory / m_Layout->ID;
         ImGui::LoadIniSettingsFromDisk(iniPath.string().c_str());
-        m_PLayout->Register(m_Resources, m_Events);
+        m_Layout->Register(m_Resources, m_Events);
     }
 }
 
 void guitar::Application::ToggleFullscreen()
 {
-    if (m_PState)
+    if (m_State)
     {
-        glfwSetWindowMonitor(m_PHandle, nullptr, m_PState->X, m_PState->Y, m_PState->Width, m_PState->Height, GLFW_DONT_CARE);
+        glfwSetWindowMonitor(m_Handle, nullptr, m_State->X, m_State->Y, m_State->Width, m_State->Height,
+                             GLFW_DONT_CARE);
+#ifdef _WIN32
         glfwSetWindowAttrib(m_PHandle, GLFW_RESIZABLE, GLFW_TRUE);
+#endif
 
-        delete m_PState;
-        m_PState = nullptr;
+        delete m_State;
+        m_State = nullptr;
     }
     else
     {
-        m_PState = new WindowState();
-        glfwGetWindowPos(m_PHandle, &m_PState->X, &m_PState->Y);
-        glfwGetWindowSize(m_PHandle, &m_PState->Width, &m_PState->Height);
+        m_State = new WindowState();
+        glfwGetWindowPos(m_Handle, &m_State->X, &m_State->Y);
+        glfwGetWindowSize(m_Handle, &m_State->Width, &m_State->Height);
 
         const auto pMonitor = glfwGetPrimaryMonitor();
         const auto pMode = glfwGetVideoMode(pMonitor);
+#ifdef _WIN32
         glfwSetWindowMonitor(m_PHandle, nullptr, 0, 0, pMode->width, pMode->height, pMode->refreshRate);
-        glfwSetWindowAttrib(m_PHandle, GLFW_RESIZABLE, GLFW_FALSE);
+        glfwSetWindowAttrib(m_PHandle, GLFW_RESIZABLE, GLFW_TRUE);
+#else
+        glfwSetWindowMonitor(m_Handle, pMonitor, 0, 0, pMode->width, pMode->height, pMode->refreshRate);
+#endif
     }
 }
 

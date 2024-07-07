@@ -39,10 +39,12 @@ void guitar::Image::Load(const ResourceManager& resources)
     stream.close();
 
     int width, height;
-    const auto pixels = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &width, &height, nullptr, 4);
+    const auto pixels = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &width, &height, nullptr,
+                                              4);
     if (!pixels)
     {
-        std::cerr << "[Image] Failed to load image from '" << Filename << "' with stbi: " << stbi_failure_reason() << std::endl;
+        std::cerr << "[Image] Failed to load image from '" << Filename << "' with stbi: " << stbi_failure_reason() <<
+            std::endl;
         return;
     }
 
