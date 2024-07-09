@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include <guitar/application.hpp>
@@ -101,16 +102,12 @@ protected:
         {
             if (ImPlot::BeginPlot("Test Plot", {-1, -1}))
             {
-                ImPlot::PlotPieChart(LABEL_IDS, VALUES, LABEL_COUNT, 0, 0, 100, "%.1f", 90, ImPlotPieChartFlags_IgnoreHidden | ImPlotPieChartFlags_Normalize);
+                ImPlot::PlotPieChart(LABEL_IDS, VALUES, LABEL_COUNT, 0, 0, 100, "%.1f", 90,
+                                     ImPlotPieChartFlags_IgnoreHidden | ImPlotPieChartFlags_Normalize);
                 ImPlot::EndPlot();
             }
         }
         ImGui::End();
-    }
-
-    void OnFrame() override
-    {
-        // std::cout << "Hello World!" << std::endl;
     }
 
 private:
