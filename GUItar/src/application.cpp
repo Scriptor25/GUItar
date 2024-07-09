@@ -70,7 +70,7 @@ void guitar::Application::ToggleFullscreen()
         glfwSetWindowMonitor(m_Handle, nullptr, m_State->X, m_State->Y, m_State->Width, m_State->Height,
                              GLFW_DONT_CARE);
 #ifdef _WIN32
-        glfwSetWindowAttrib(m_PHandle, GLFW_RESIZABLE, GLFW_TRUE);
+        glfwSetWindowAttrib(m_Handle, GLFW_RESIZABLE, GLFW_TRUE);
 #endif
 
         delete m_State;
@@ -85,8 +85,8 @@ void guitar::Application::ToggleFullscreen()
         const auto pMonitor = glfwGetPrimaryMonitor();
         const auto pMode = glfwGetVideoMode(pMonitor);
 #ifdef _WIN32
-        glfwSetWindowMonitor(m_PHandle, nullptr, 0, 0, pMode->width, pMode->height, pMode->refreshRate);
-        glfwSetWindowAttrib(m_PHandle, GLFW_RESIZABLE, GLFW_TRUE);
+        glfwSetWindowMonitor(m_Handle, nullptr, 0, 0, pMode->width, pMode->height, pMode->refreshRate);
+        glfwSetWindowAttrib(m_Handle, GLFW_RESIZABLE, GLFW_TRUE);
 #else
         glfwSetWindowMonitor(m_Handle, pMonitor, 0, 0, pMode->width, pMode->height, pMode->refreshRate);
 #endif
