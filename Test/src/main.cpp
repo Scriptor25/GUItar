@@ -1,13 +1,8 @@
-#include <cmath>
 #include <iostream>
 #include <vector>
 #include <guitar/application.hpp>
 #include <guitar/image.hpp>
 #include <implot.h>
-
-static constexpr const char* LABEL_IDS[] = {"Hello", "World", "!"};
-static constexpr float VALUES[] = {0.5f, 0.3f, 0.2f};
-static constexpr int LABEL_COUNT = std::size(LABEL_IDS);
 
 class Test : public guitar::Application
 {
@@ -102,8 +97,16 @@ protected:
         {
             if (ImPlot::BeginPlot("Test Plot", {-1, -1}))
             {
-                ImPlot::PlotPieChart(LABEL_IDS, VALUES, LABEL_COUNT, 0, 0, 100, "%.1f", 90,
-                                     ImPlotPieChartFlags_IgnoreHidden | ImPlotPieChartFlags_Normalize);
+                const auto [buttons, axes] = Input().GetGamepad(0);
+                const float xs[]{
+                    0.0f,
+                    axes[GLFW_GAMEPAD_AXIS_LEFT_X]
+                };
+                const float ys[]{
+                    0.0f,
+                    -axes[GLFW_GAMEPAD_AXIS_LEFT_Y]
+                };
+                ImPlot::PlotLine("", xs, ys, 2);
                 ImPlot::EndPlot();
             }
         }
