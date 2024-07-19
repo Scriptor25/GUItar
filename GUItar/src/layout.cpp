@@ -57,6 +57,18 @@ void guitar::WindowElement::Release(ResourceManager& resources, EventManager& ev
         element->Release(resources, events);
 }
 
+void guitar::GroupElement::Register(ResourceManager& resources, EventManager& events)
+{
+    for (const auto& element : Elements)
+        element->Register(resources, events);
+}
+
+void guitar::GroupElement::Release(ResourceManager& resources, EventManager& events)
+{
+    for (const auto& element : Elements)
+        element->Release(resources, events);
+}
+
 void guitar::ComboElement::Register(ResourceManager& resources, EventManager& events)
 {
     for (const auto& element : Elements)
@@ -126,7 +138,8 @@ std::map<std::string, std::function<void()>> guitar::SimpleElement::FUNCS = {
     {"bullet", ImGui::Bullet},
     {"separator", ImGui::Separator},
     {"spacing", ImGui::Spacing},
-    {"newline", ImGui::NewLine}
+    {"newline", ImGui::NewLine},
+    {"sameline", [] { ImGui::SameLine(); }},
 };
 
 guitar::KeyShortcut::KeyShortcut() = default;
@@ -257,10 +270,10 @@ bool guitar::KeyShortcut::Matches(const ImmutableEvent<KeyPayload>& event) const
     return std::any_of(Infos.begin(), Infos.end(), [&event](const ShortcutInfo& info)
     {
         return info.Key == event.Payload.KeyCode
-                && info.Ctrl == ((event.Payload.Mods & GLFW_MOD_CONTROL) != 0)
-                && info.Alt == ((event.Payload.Mods & GLFW_MOD_ALT) != 0)
-                && info.Super == ((event.Payload.Mods & GLFW_MOD_SUPER) != 0)
-                && info.Shift == ((event.Payload.Mods & GLFW_MOD_SHIFT) != 0);
+            && info.Ctrl == ((event.Payload.Mods & GLFW_MOD_CONTROL) != 0)
+            && info.Alt == ((event.Payload.Mods & GLFW_MOD_ALT) != 0)
+            && info.Super == ((event.Payload.Mods & GLFW_MOD_SUPER) != 0)
+            && info.Shift == ((event.Payload.Mods & GLFW_MOD_SHIFT) != 0);
     });
 }
 

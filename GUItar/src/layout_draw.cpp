@@ -25,6 +25,14 @@ void guitar::WindowElement::Draw(ResourceManager& resources, EventManager& event
     ImGui::End();
 }
 
+void guitar::GroupElement::Draw(ResourceManager& resources, EventManager& events)
+{
+    ImGui::BeginGroup();
+    for (const auto& element : Elements)
+        element->Draw(resources, events);
+    ImGui::EndGroup();
+}
+
 void guitar::ButtonElement::Draw(ResourceManager& resources, EventManager& events)
 {
     const auto text = resources.GetString(events, Text);
