@@ -16,6 +16,7 @@
         <button event="test">Press me!</button>
         <button>No event</button>
         <button event="open_demo">Open Demo</button>
+        <button event="fullscreen">Fullscreen</button>
         <separatorText>Image</separatorText>
         <image src="logo"/>
     </window>
@@ -23,7 +24,7 @@
         <combo label="Test Combo##test" preview="$selected">
             <custom event="test_combo_body"/>
         </combo>
-        <inputText label="An Input Text" hint="enter some text and press enter" event="on_input_text" default="$ABC"/>
+        <inputText label="A Text Input" hint="enter some text and press enter" event="on_input_text" default="$ABC"/>
         <image src="$img_test"/>
     </window>
 </layout>

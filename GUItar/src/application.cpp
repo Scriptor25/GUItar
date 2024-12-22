@@ -67,8 +67,14 @@ void guitar::Application::ToggleFullscreen()
 {
     if (m_State)
     {
-        glfwSetWindowMonitor(m_Handle, nullptr, m_State->X, m_State->Y, m_State->Width, m_State->Height,
-                             GLFW_DONT_CARE);
+        glfwSetWindowMonitor(
+            m_Handle,
+            nullptr,
+            m_State->X
+            , m_State->Y
+            , m_State->Width,
+            m_State->Height,
+            GLFW_DONT_CARE);
 #ifdef _WIN32
         glfwSetWindowAttrib(m_Handle, GLFW_RESIZABLE, GLFW_TRUE);
 #endif

@@ -21,7 +21,7 @@ public:
             auto& event = *dynamic_cast<const guitar::ImmutableEvent<guitar::ImagePayload>*>(pEvent);
             event.Payload.Width = m_Image.Width;
             event.Payload.Height = m_Image.Height;
-            event.Payload.TextureID = reinterpret_cast<ImTextureID>(m_Image.Texture);
+            event.Payload.TextureID = static_cast<ImTextureID>(m_Image.Texture);
             return true;
         });
 
@@ -68,7 +68,7 @@ public:
         Events().Register("ABC", this, [](const guitar::EventBase* pEvent)
         {
             auto& event = *dynamic_cast<const guitar::MutableEvent<std::string>*>(pEvent);
-            event.Payload = "ABC";
+            event.Payload = "Some default value.";
             return true;
         });
 
@@ -88,7 +88,12 @@ public:
 protected:
     void OnStart() override
     {
-        m_Image.StorePixels(100, 100, nullptr);
+        constexpr unsigned pixels[]
+        {
+            0xff000000, 0xffff0000,
+            0xff0000ff, 0xff00ff00,
+        };
+        m_Image.StorePixels(2, 2, reinterpret_cast<const unsigned char*>(pixels), false);
     }
 
     void OnImGui() override
@@ -97,7 +102,7 @@ protected:
         {
             if (ImPlot::BeginPlot("Test Plot", {-1, -1}))
             {
-                const auto [buttons, axes] = Input().GetGamepad(0);
+                const auto [buttons, axes] = guitar::InputManager::GetGamepad(0, true);
                 const float xs[]{
                     0.0f,
                     axes[GLFW_GAMEPAD_AXIS_LEFT_X]

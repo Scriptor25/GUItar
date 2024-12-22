@@ -19,9 +19,11 @@ namespace guitar
         std::string Title = "Application";
         std::string Version = "1.0.0";
         std::string Layout = "main";
+        std::string IniDirectory = "ini";
+
         int Width = 0;
         int Height = 0;
+
         bool Viewports = true;
-        std::string IniDirectory = "ini";
     };
 }

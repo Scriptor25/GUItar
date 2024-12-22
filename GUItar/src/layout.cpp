@@ -5,7 +5,6 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
-#include <ranges>
 #include <GLFW/glfw3.h>
 #include <guitar/events.hpp>
 #include <guitar/layout.hpp>
@@ -240,22 +239,22 @@ guitar::KeyShortcut::KeyShortcut(const std::string& str)
 {
     for (const auto& substr : split(str, '|'))
     {
-        auto& [Key, Ctrl, Alt, Super, Shift] = Infos.emplace_back();
+        auto& [key_, ctrl_, alt_, super_, shift_] = Infos.emplace_back();
         for (auto info_str : split(substr, '+'))
         {
             for (auto& c : info_str)
-                c = std::toupper(c);
+                c = static_cast<char>(std::toupper(c));
 
-            if (info_str == "CTRL") Ctrl = true;
-            else if (info_str == "ALT") Alt = true;
-            else if (info_str == "SUPER") Super = true;
-            else if (info_str == "SHIFT") Shift = true;
+            if (info_str == "CTRL") ctrl_ = true;
+            else if (info_str == "ALT") alt_ = true;
+            else if (info_str == "SUPER") super_ = true;
+            else if (info_str == "SHIFT") shift_ = true;
             else
             {
                 if (const auto& key = keys[info_str])
-                    Key = key;
+                    key_ = key;
                 else if (info_str.size() == 1)
-                    Key = static_cast<unsigned char>(info_str[0]);
+                    key_ = static_cast<unsigned char>(info_str[0]);
                 else std::cerr << "Undefined key identifier " << std::quoted(info_str) << std::endl;
             }
         }
@@ -282,25 +281,25 @@ std::string guitar::KeyShortcut::String() const
     std::string str;
     for (size_t i = 0; i < Infos.size(); ++i)
     {
-        const auto& [KeyCode, Ctrl, Alt, Super, Shift] = Infos[i];
+        const auto& [key_code_, ctrl_, alt_, super_, shift_] = Infos[i];
         if (i > 0) str += ", ";
-        if (Ctrl) str += "CTRL+";
-        if (Alt) str += "ALT+";
-        if (Super) str += "SUPER+";
-        if (Shift) str += "SHIFT+";
+        if (ctrl_) str += "CTRL+";
+        if (alt_) str += "ALT+";
+        if (super_) str += "SUPER+";
+        if (shift_) str += "SHIFT+";
 
         bool found_keycode = false;
-        for (const auto& [id, keycode] : keys)
+        for (const auto& [id_, code_] : keys)
         {
-            if (keycode == KeyCode)
+            if (code_ == key_code_)
             {
-                str += id;
+                str += id_;
                 found_keycode = true;
                 break;
             }
         }
         if (!found_keycode)
-            str += static_cast<char>(KeyCode);
+            str += static_cast<char>(key_code_);
     }
     return str;
 }
