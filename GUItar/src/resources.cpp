@@ -17,8 +17,8 @@ std::ifstream guitar::ResourceManager::Open(const std::string& name, const std::
 
 void guitar::ResourceManager::LoadAllImages()
 {
-    for (auto& [key, image] : m_Images)
-        image.Load(*this);
+    for (auto& [key_, image_] : m_Images)
+        image_.Load(*this);
 }
 
 void guitar::ResourceManager::Index()
