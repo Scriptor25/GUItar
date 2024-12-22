@@ -10,23 +10,31 @@ void guitar::KeyState::Update(const bool state)
     Now = state;
 }
 
-GLFWgamepadstate guitar::InputManager::GetJoystick(const int jid, const bool silent)
+GLFWgamepadstate guitar::InputManager::GetGamepad(const int jid, const bool silent)
 {
     if (jid < GLFW_JOYSTICK_1 || jid > GLFW_JOYSTICK_16)
     {
-        std::cerr << "Joystick index out of range [0;15]: " << jid << std::endl;
+        if (!silent) std::cerr << "Joystick index out of range [0;15]: " << jid << std::endl;
         return {};
     }
 
     if (!glfwJoystickPresent(jid))
     {
-        std::cerr << "Joystick " << jid << " is not present" << std::endl;
+        if (!silent) std::cerr << "Joystick " << jid << " is not present" << std::endl;
         return {};
     }
 
     if (!glfwJoystickIsGamepad(jid))
     {
-        std::cerr << "Joystick " << jid << " is not a gamepad" << std::endl;
+        const auto name = glfwGetJoystickName(jid);
+        const auto guid = glfwGetJoystickGUID(jid);
+        if (!silent)
+            std::cerr
+                << "Joystick "
+                << jid
+                << " (name=" << name
+                << ", guid=" << guid
+                << ") is not a gamepad" << std::endl;
         return {};
     }
 
@@ -74,7 +82,7 @@ void guitar::InputManager::CreateAxis(const std::string& id, const std::vector<A
 
 float guitar::InputManager::GetAxis(const int jid, const std::string& id)
 {
-    const auto [Buttons, Axes] = GetJoystick(jid, true);
+    const auto [Buttons, Axes] = GetGamepad(jid, true);
 
     float accum = 0.0f;
     for (const auto& [Type, Index, Negate] : m_Axes[id])

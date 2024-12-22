@@ -73,7 +73,8 @@ static void from_xml(const tinyxml2::XMLElement* pXml, std::unique_ptr<guitar::E
     ref = std::move(element);
 }
 
-static std::map<std::string, std::function<void(const tinyxml2::XMLElement*, std::unique_ptr<guitar::Element>&)>> xml_funcs
+static std::map<std::string, std::function<void(const tinyxml2::XMLElement*, std::unique_ptr<guitar::Element>&)>>
+xml_funcs
 {
     {"bullet", from_xml<guitar::SimpleElement>},
     {"button", from_xml<guitar::ButtonElement>},
@@ -81,11 +82,13 @@ static std::map<std::string, std::function<void(const tinyxml2::XMLElement*, std
     {"combo", from_xml<guitar::ComboElement>},
     {"custom", from_xml<guitar::CustomElement>},
     {"demo", from_xml<guitar::DemoElement>},
+    {"group", from_xml<guitar::GroupElement>},
     {"image", from_xml<guitar::ImageElement>},
     {"inputText", from_xml<guitar::InputTextElement>},
     {"item", from_xml<guitar::MenuItemElement>},
     {"menubar", from_xml<guitar::MenuBarElement>},
     {"newline", from_xml<guitar::SimpleElement>},
+    {"sameline", from_xml<guitar::SimpleElement>},
     {"separator", from_xml<guitar::SimpleElement>},
     {"separatorText", from_xml<guitar::TextElement>},
     {"spacing", from_xml<guitar::SimpleElement>},
@@ -104,6 +107,20 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, std::unique_ptr<Element>&
 
 void guitar::FromXML(const tinyxml2::XMLElement*, DemoElement&)
 {
+}
+
+void guitar::FromXML(const tinyxml2::XMLElement* pXml, GroupElement& ref)
+{
+    if (pXml->NoChildren())
+        return;
+
+    for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
+    {
+        std::unique_ptr<Element> element;
+        FromXML(ptr, element);
+        if (element)
+            ref.Elements.push_back(std::move(element));
+    }
 }
 
 void guitar::FromXML(const tinyxml2::XMLElement* pXml, WindowElement& ref)

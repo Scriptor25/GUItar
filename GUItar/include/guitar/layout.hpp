@@ -55,6 +55,16 @@ namespace guitar
         std::vector<std::unique_ptr<Element>> Elements;
     };
 
+    struct GroupElement : Element
+    {
+        void Register(ResourceManager& resources, EventManager& events) override;
+        void Release(ResourceManager& resources, EventManager& events) override;
+
+        void Draw(ResourceManager& resources, EventManager& events) override;
+
+        std::vector<std::unique_ptr<Element>> Elements;
+    };
+
     struct ButtonElement : Element
     {
         void Draw(ResourceManager& resources, EventManager& events) override;

@@ -4,8 +4,8 @@ project(GUItar)
 
 option(GUITAR_TEST "Enable building the test project" OFF)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(Dependencies)
 add_subdirectory(GUItar)

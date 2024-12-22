@@ -31,7 +31,7 @@ namespace guitar
     class InputManager
     {
     public:
-        static GLFWgamepadstate GetJoystick(int jid, bool silent = false);
+        static GLFWgamepadstate GetGamepad(int jid, bool silent = false);
         static std::map<int, std::string> ListJoysticks();
 
         bool GetKey(int key);

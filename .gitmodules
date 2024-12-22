@@ -10,3 +10,7 @@
 	path = Dependencies/GLEW
 	url = https://github.com/Perlmint/glew-cmake.git
 	branch = master
+[submodule "Dependencies/ImPlot"]
+	path = Dependencies/ImPlot
+	url = https://github.com/epezent/implot.git
+	branch = master

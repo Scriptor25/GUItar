@@ -181,14 +181,14 @@ namespace guitar
         void Loop();
         void Destroy();
 
-        GLFWwindow* m_PHandle = nullptr;
-        WindowState* m_PState = nullptr;
+        GLFWwindow* m_Handle = nullptr;
+        WindowState* m_State = nullptr;
 
         ResourceManager m_Resources;
         EventManager m_Events;
         InputManager m_Input;
 
-        const Layout* m_PLayout = nullptr;
+        const Layout* m_Layout = nullptr;
 
         bool m_InFrame = false;
         std::vector<ScheduleTask> m_Tasks;

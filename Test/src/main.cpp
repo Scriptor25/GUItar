@@ -4,10 +4,6 @@
 #include <guitar/image.hpp>
 #include <implot.h>
 
-static constexpr const char* LABEL_IDS[] = {"Hello", "World", "!"};
-static constexpr float VALUES[] = {0.5f, 0.3f, 0.2f};
-static constexpr int LABEL_COUNT = std::size(LABEL_IDS);
-
 class Test : public guitar::Application
 {
 public:
@@ -25,7 +21,7 @@ public:
             auto& event = *dynamic_cast<const guitar::ImmutableEvent<guitar::ImagePayload>*>(pEvent);
             event.Payload.Width = m_Image.Width;
             event.Payload.Height = m_Image.Height;
-            event.Payload.TextureID = reinterpret_cast<ImTextureID>(m_Image.Texture);
+            event.Payload.TextureID = static_cast<ImTextureID>(m_Image.Texture);
             return true;
         });
 
@@ -72,7 +68,7 @@ public:
         Events().Register("ABC", this, [](const guitar::EventBase* pEvent)
         {
             auto& event = *dynamic_cast<const guitar::MutableEvent<std::string>*>(pEvent);
-            event.Payload = "ABC";
+            event.Payload = "Some default value.";
             return true;
         });
 
@@ -92,7 +88,12 @@ public:
 protected:
     void OnStart() override
     {
-        m_Image.StorePixels(100, 100, nullptr);
+        constexpr unsigned pixels[]
+        {
+            0xff000000, 0xffff0000,
+            0xff0000ff, 0xff00ff00,
+        };
+        m_Image.StorePixels(2, 2, reinterpret_cast<const unsigned char*>(pixels), false);
     }
 
     void OnImGui() override
@@ -101,16 +102,20 @@ protected:
         {
             if (ImPlot::BeginPlot("Test Plot", {-1, -1}))
             {
-                ImPlot::PlotPieChart(LABEL_IDS, VALUES, LABEL_COUNT, 0, 0, 100, "%.1f", 90, ImPlotPieChartFlags_IgnoreHidden | ImPlotPieChartFlags_Normalize);
+                const auto [buttons, axes] = guitar::InputManager::GetGamepad(0, true);
+                const float xs[]{
+                    0.0f,
+                    axes[GLFW_GAMEPAD_AXIS_LEFT_X]
+                };
+                const float ys[]{
+                    0.0f,
+                    -axes[GLFW_GAMEPAD_AXIS_LEFT_Y]
+                };
+                ImPlot::PlotLine("", xs, ys, 2);
                 ImPlot::EndPlot();
             }
         }
         ImGui::End();
-    }
-
-    void OnFrame() override
-    {
-        // std::cout << "Hello World!" << std::endl;
     }
 
 private:

@@ -39,22 +39,34 @@ void guitar::Image::Load(const ResourceManager& resources)
     stream.close();
 
     int width, height;
-    const auto pixels = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &width, &height, nullptr, 4);
+    const auto pixels = stbi_load_from_memory(
+        buffer.data(),
+        static_cast<int>(buffer.size()),
+        &width,
+        &height,
+        nullptr,
+        4);
     if (!pixels)
     {
-        std::cerr << "[Image] Failed to load image from '" << Filename << "' with stbi: " << stbi_failure_reason() << std::endl;
+        std::cerr
+            << "[Image] Failed to load image from '"
+            << Filename
+            << "' with stb image: "
+            << stbi_failure_reason()
+            << std::endl;
         return;
     }
 
-    StorePixels(width, height, pixels);
+    StorePixels(width, height, pixels, true);
 
     stbi_image_free(pixels);
 }
 
-void guitar::Image::StorePixels(const int width, const int height, const unsigned char* pixels)
+void guitar::Image::StorePixels(const int width, const int height, const unsigned char* pixels, const bool filter)
 {
     Width = width;
     Height = height;
+    Filter = filter;
 
     if (!Texture)
     {
@@ -64,15 +76,16 @@ void guitar::Image::StorePixels(const int width, const int height, const unsigne
             std::cerr << "[Image] Failed to create GL texture" << std::endl;
             return;
         }
-
-        glBindTexture(GL_TEXTURE_2D, Texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
 
     glBindTexture(GL_TEXTURE_2D, Texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Filter ? GL_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
     glBindTexture(GL_TEXTURE_2D, 0);
 }
