@@ -12,7 +12,7 @@ guitar::ResourceManager::ResourceManager(const std::filesystem::path& executable
 
 std::ifstream guitar::ResourceManager::Open(const std::string& name, const std::ios_base::openmode mode) const
 {
-    return {m_Root / name, std::ios_base::in | mode};
+    return std::ifstream(m_Root / name, std::ios_base::in | mode);
 }
 
 void guitar::ResourceManager::LoadAllImages()
