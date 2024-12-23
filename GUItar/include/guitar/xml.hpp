@@ -7,28 +7,28 @@
 
 namespace guitar
 {
-    void GetStringAttrib(const tinyxml2::XMLElement* pXml, const std::string& name, std::string& ref);
-    void GetIntAttrib(const tinyxml2::XMLElement* pXml, const std::string& name, int& ref);
-    void GetBoolAttrib(const tinyxml2::XMLElement* pXml, const std::string& name, bool& ref);
-    void GetImVec2Attrib(const tinyxml2::XMLElement* pXml, const std::string& name, ImVec2& ref);
+    void GetStringAttrib(const tinyxml2::XMLElement* xml, const std::string& name, std::string& ref);
+    void GetIntAttrib(const tinyxml2::XMLElement* xml, const std::string& name, int& ref);
+    void GetBoolAttrib(const tinyxml2::XMLElement* xml, const std::string& name, bool& ref);
+    void GetImVec2Attrib(const tinyxml2::XMLElement* xml, const std::string& name, ImVec2& ref);
 
-    void FromXML(const tinyxml2::XMLElement* pXml, AppConfig& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, Layout& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, Menu& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, AppConfig& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, Layout& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, Menu& ref);
 
-    void FromXML(const tinyxml2::XMLElement* pXml, std::unique_ptr<Element>& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, std::unique_ptr<Element>& ref);
 
-    void FromXML(const tinyxml2::XMLElement* pXml, ButtonElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, CheckboxElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, ComboElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, CustomElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, DemoElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, GroupElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, ImageElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, InputTextElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, MenuItemElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, MenuBarElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, SimpleElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, TextElement& ref);
-    void FromXML(const tinyxml2::XMLElement* pXml, WindowElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, ButtonElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, CheckboxElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, ComboElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, CustomElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, DemoElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, GroupElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, ImageElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, InputTextElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, MenuItemElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, MenuBarElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, SimpleElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, TextElement& ref);
+    void FromXML(const tinyxml2::XMLElement* xml, WindowElement& ref);
 }

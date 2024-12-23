@@ -82,36 +82,36 @@ void guitar::InputManager::CreateAxis(const std::string& id, const std::vector<A
 
 float guitar::InputManager::GetAxis(const int jid, const std::string& id)
 {
-    const auto [Buttons, Axes] = GetGamepad(jid, true);
+    const auto [buttons_, axes_] = GetGamepad(jid, true);
 
     float accum = 0.0f;
-    for (const auto& [Type, Index, Negate] : m_Axes[id])
+    for (const auto& [type_, index_, negate_] : m_Axes[id])
     {
         float value;
-        switch (Type)
+        switch (type_)
         {
         case AxisType_Key:
-            value = GetKey(Index) ? 1.0f : 0.0f;
+            value = GetKey(index_) ? 1.0f : 0.0f;
             break;
         case AxisType_Button:
-            value = Index >= 0 && Index < std::size(Buttons) && Buttons[Index] == GLFW_PRESS ? 1.0f : 0.0f;
+            value = index_ >= 0 && index_ < std::size(buttons_) && buttons_[index_] == GLFW_PRESS ? 1.0f : 0.0f;
             break;
         case AxisType_Axis:
-            value = Index >= 0 && Index < std::size(Axes) ? Axes[Index] : 0.0f;
+            value = index_ >= 0 && index_ < std::size(axes_) ? axes_[index_] : 0.0f;
             break;
         default:
             continue;
         }
 
-        accum += Negate ? -value : value;
+        accum += negate_ ? -value : value;
     }
 
     return accum;
 }
 
-void guitar::InputManager::Update(GLFWwindow* pWindow)
+void guitar::InputManager::Update(GLFWwindow* window)
 {
     for (int i = 32; i < GLFW_KEY_LAST; ++i)
-        if (const int state = glfwGetKey(pWindow, i); state != GLFW_INVALID_ENUM)
+        if (const int state = glfwGetKey(window, i); state != GLFW_INVALID_ENUM)
             m_Keys[i].Update(state);
 }

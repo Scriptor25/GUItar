@@ -82,12 +82,13 @@ void guitar::ComboElement::Release(ResourceManager& resources, EventManager& eve
 
 void guitar::MenuItemElement::Register(ResourceManager& resources, EventManager& events)
 {
-    events.Register("on_key", this, [this, &events](const EventBase* pPayload)
+    events.Register("on_key", this, [this, &events](const EventBase* payload_ptr)
     {
-        if (const auto& payload = *dynamic_cast<const ImmutableEvent<KeyPayload>*>(pPayload); Shortcut.Matches(payload))
+        if (const auto& payload = *dynamic_cast<const ImmutableEvent<KeyPayload>*>(payload_ptr);
+            Shortcut.Matches(payload))
         {
-            const EventBase evt_payload(this);
-            events.Invoke(Event, &evt_payload);
+            const EventBase event(this);
+            events.Invoke(Event, &event);
             return true;
         }
         return false;
@@ -143,7 +144,7 @@ std::map<std::string, std::function<void()>> guitar::SimpleElement::FUNCS = {
 
 guitar::KeyShortcut::KeyShortcut() = default;
 
-static std::map<std::string, int> keys
+static const std::map<std::string, int> KEYS
 {
     {"ESCAPE", GLFW_KEY_ESCAPE},
     {"ENTER", GLFW_KEY_ENTER},
@@ -219,20 +220,20 @@ static std::map<std::string, int> keys
 
 std::vector<std::string> split(const std::string& str, const char delim)
 {
-    std::vector<std::string> substrs;
-    auto strcpy = str;
+    std::vector<std::string> sub_strs;
+    auto str_cpy = str;
 
-    for (auto pos = strcpy.find(delim); pos != std::string::npos; pos = strcpy.find(delim))
+    for (auto pos = str_cpy.find(delim); pos != std::string::npos; pos = str_cpy.find(delim))
     {
-        if (auto substr = strcpy.substr(0, pos); !substr.empty())
-            substrs.push_back(substr);
-        strcpy = strcpy.substr(pos + 1);
+        if (auto substr = str_cpy.substr(0, pos); !substr.empty())
+            sub_strs.push_back(substr);
+        str_cpy = str_cpy.substr(pos + 1);
     }
 
-    if (!strcpy.empty())
-        substrs.push_back(strcpy);
+    if (!str_cpy.empty())
+        sub_strs.push_back(str_cpy);
 
-    return substrs;
+    return sub_strs;
 }
 
 guitar::KeyShortcut::KeyShortcut(const std::string& str)
@@ -251,8 +252,8 @@ guitar::KeyShortcut::KeyShortcut(const std::string& str)
             else if (info_str == "SHIFT") shift_ = true;
             else
             {
-                if (const auto& key = keys[info_str])
-                    key_ = key;
+                if (KEYS.contains(info_str))
+                    key_ = KEYS.at(info_str);
                 else if (info_str.size() == 1)
                     key_ = static_cast<unsigned char>(info_str[0]);
                 else std::cerr << "Undefined key identifier " << std::quoted(info_str) << std::endl;
@@ -266,9 +267,9 @@ bool guitar::KeyShortcut::Matches(const ImmutableEvent<KeyPayload>& event) const
     if (event.Payload.Action != GLFW_RELEASE)
         return false;
 
-    return std::any_of(Infos.begin(), Infos.end(), [&event](const ShortcutInfo& info)
+    return std::ranges::any_of(Infos, [&event](const ShortcutInfo& info)
     {
-        return info.Key == event.Payload.KeyCode
+        return info.Key == event.Payload.Key
             && info.Ctrl == ((event.Payload.Mods & GLFW_MOD_CONTROL) != 0)
             && info.Alt == ((event.Payload.Mods & GLFW_MOD_ALT) != 0)
             && info.Super == ((event.Payload.Mods & GLFW_MOD_SUPER) != 0)
@@ -289,7 +290,7 @@ std::string guitar::KeyShortcut::String() const
         if (shift_) str += "SHIFT+";
 
         bool found_keycode = false;
-        for (const auto& [id_, code_] : keys)
+        for (const auto& [id_, code_] : KEYS)
         {
             if (code_ == key_code_)
             {

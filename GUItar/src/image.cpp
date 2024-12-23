@@ -1,14 +1,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <iostream>
 #include <stb_image.h>
+#include <utility>
 #include <vector>
 #include <guitar/image.hpp>
 #include <guitar/resources.hpp>
 
 guitar::Image::Image() = default;
 
-guitar::Image::Image(const std::string& filename)
-    : Filename(filename)
+guitar::Image::Image(std::string filename)
+    : Filename(std::move(filename))
 {
 }
 
