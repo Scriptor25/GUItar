@@ -2,27 +2,27 @@
 #include <guitar/layout.hpp>
 #include <guitar/xml.hpp>
 
-void guitar::GetStringAttrib(const tinyxml2::XMLElement* pXml, const std::string& name, std::string& ref)
+void guitar::GetStringAttrib(const tinyxml2::XMLElement* xml, const std::string& name, std::string& ref)
 {
     const char* value;
-    if (pXml->QueryStringAttribute(name.c_str(), &value) == tinyxml2::XML_SUCCESS)
+    if (xml->QueryStringAttribute(name.c_str(), &value) == tinyxml2::XML_SUCCESS)
         ref = value;
 }
 
-void guitar::GetIntAttrib(const tinyxml2::XMLElement* pXml, const std::string& name, int& ref)
+void guitar::GetIntAttrib(const tinyxml2::XMLElement* xml, const std::string& name, int& ref)
 {
-    pXml->QueryIntAttribute(name.c_str(), &ref);
+    xml->QueryIntAttribute(name.c_str(), &ref);
 }
 
-void guitar::GetBoolAttrib(const tinyxml2::XMLElement* pXml, const std::string& name, bool& ref)
+void guitar::GetBoolAttrib(const tinyxml2::XMLElement* xml, const std::string& name, bool& ref)
 {
-    pXml->QueryBoolAttribute(name.c_str(), &ref);
+    xml->QueryBoolAttribute(name.c_str(), &ref);
 }
 
-void guitar::GetImVec2Attrib(const tinyxml2::XMLElement* pXml, const std::string& name, ImVec2& ref)
+void guitar::GetImVec2Attrib(const tinyxml2::XMLElement* xml, const std::string& name, ImVec2& ref)
 {
     std::string value;
-    GetStringAttrib(pXml, name, value);
+    GetStringAttrib(xml, name, value);
     if (!value.empty())
     {
         const auto idx = value.find_first_of(';');
@@ -31,37 +31,37 @@ void guitar::GetImVec2Attrib(const tinyxml2::XMLElement* pXml, const std::string
     }
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, AppConfig& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, AppConfig& ref)
 {
-    GetStringAttrib(pXml, "title", ref.Title);
-    GetStringAttrib(pXml, "version", ref.Version);
-    GetStringAttrib(pXml, "layout", ref.Layout);
-    GetIntAttrib(pXml, "width", ref.Width);
-    GetIntAttrib(pXml, "height", ref.Height);
-    GetBoolAttrib(pXml, "viewports", ref.Viewports);
-    GetStringAttrib(pXml, "iniDirectory", ref.IniDirectory);
+    GetStringAttrib(xml, "title", ref.Title);
+    GetStringAttrib(xml, "version", ref.Version);
+    GetStringAttrib(xml, "layout", ref.Layout);
+    GetIntAttrib(xml, "width", ref.Width);
+    GetIntAttrib(xml, "height", ref.Height);
+    GetBoolAttrib(xml, "viewports", ref.Viewports);
+    GetStringAttrib(xml, "iniDirectory", ref.IniDirectory);
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, Layout& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, Layout& ref)
 {
-    GetStringAttrib(pXml, "id", ref.ID);
-    GetBoolAttrib(pXml, "dockspace", ref.Dockspace);
+    GetStringAttrib(xml, "id", ref.ID);
+    GetBoolAttrib(xml, "dockspace", ref.Dockspace);
 
-    if (pXml->NoChildren())
+    if (xml->NoChildren())
         return;
 
-    for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
+    for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
         FromXML(ptr, ref.Elements.emplace_back());
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, Menu& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, Menu& ref)
 {
-    GetStringAttrib(pXml, "label", ref.Label);
+    GetStringAttrib(xml, "label", ref.Label);
 
-    if (pXml->NoChildren())
+    if (xml->NoChildren())
         return;
 
-    for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
+    for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
         FromXML(ptr, ref.Elements.emplace_back());
 }
 
@@ -96,11 +96,11 @@ xml_funcs
     {"window", from_xml<guitar::WindowElement>},
 };
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, std::unique_ptr<Element>& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, std::unique_ptr<Element>& ref)
 {
-    const std::string type = pXml->Name();
+    const std::string type = xml->Name();
     if (const auto& func = xml_funcs[type])
-        return func(pXml, ref);
+        return func(xml, ref);
 
     std::cerr << "[FromXML] Undefined element type '" << type << "'" << std::endl;
 }
@@ -109,12 +109,12 @@ void guitar::FromXML(const tinyxml2::XMLElement*, DemoElement&)
 {
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, GroupElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, GroupElement& ref)
 {
-    if (pXml->NoChildren())
+    if (xml->NoChildren())
         return;
 
-    for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
+    for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
     {
         std::unique_ptr<Element> element;
         FromXML(ptr, element);
@@ -123,14 +123,14 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, GroupElement& ref)
     }
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, WindowElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, WindowElement& ref)
 {
-    GetStringAttrib(pXml, "name", ref.Name);
+    GetStringAttrib(xml, "name", ref.Name);
 
-    if (pXml->NoChildren())
+    if (xml->NoChildren())
         return;
 
-    for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
+    for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
     {
         std::unique_ptr<Element> element;
         FromXML(ptr, element);
@@ -139,30 +139,30 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, WindowElement& ref)
     }
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, ButtonElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, ButtonElement& ref)
 {
-    ref.Text = pXml->GetText();
-    GetStringAttrib(pXml, "event", ref.Event);
+    ref.Text = xml->GetText();
+    GetStringAttrib(xml, "event", ref.Event);
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, ImageElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, ImageElement& ref)
 {
-    GetStringAttrib(pXml, "src", ref.Source);
-    GetBoolAttrib(pXml, "keepRatio", ref.KeepRatio);
-    GetImVec2Attrib(pXml, "bounds", ref.Bounds);
-    GetImVec2Attrib(pXml, "uv0", ref.UV0);
-    GetImVec2Attrib(pXml, "uv1", ref.UV1);
+    GetStringAttrib(xml, "src", ref.Source);
+    GetBoolAttrib(xml, "keepRatio", ref.KeepRatio);
+    GetImVec2Attrib(xml, "bounds", ref.Bounds);
+    GetImVec2Attrib(xml, "uv0", ref.UV0);
+    GetImVec2Attrib(xml, "uv1", ref.UV1);
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, ComboElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, ComboElement& ref)
 {
-    GetStringAttrib(pXml, "label", ref.Label);
-    GetStringAttrib(pXml, "preview", ref.Preview);
+    GetStringAttrib(xml, "label", ref.Label);
+    GetStringAttrib(xml, "preview", ref.Preview);
 
-    if (pXml->NoChildren())
+    if (xml->NoChildren())
         return;
 
-    for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
+    for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
     {
         std::unique_ptr<Element> element;
         FromXML(ptr, element);
@@ -171,56 +171,56 @@ void guitar::FromXML(const tinyxml2::XMLElement* pXml, ComboElement& ref)
     }
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, CustomElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, CustomElement& ref)
 {
-    GetStringAttrib(pXml, "event", ref.Event);
+    GetStringAttrib(xml, "event", ref.Event);
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, InputTextElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, InputTextElement& ref)
 {
-    GetStringAttrib(pXml, "label", ref.Label);
-    GetStringAttrib(pXml, "hint", ref.Hint);
-    GetStringAttrib(pXml, "event", ref.Event);
-    GetStringAttrib(pXml, "default", ref.Default);
+    GetStringAttrib(xml, "label", ref.Label);
+    GetStringAttrib(xml, "hint", ref.Hint);
+    GetStringAttrib(xml, "event", ref.Event);
+    GetStringAttrib(xml, "default", ref.Default);
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, MenuItemElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, MenuItemElement& ref)
 {
-    ref.Label = pXml->GetText();
-    GetStringAttrib(pXml, "event", ref.Event);
+    ref.Label = xml->GetText();
+    GetStringAttrib(xml, "event", ref.Event);
     std::string shortcut;
-    GetStringAttrib(pXml, "shortcut", shortcut);
+    GetStringAttrib(xml, "shortcut", shortcut);
     ref.Shortcut = KeyShortcut(shortcut);
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, MenuBarElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, MenuBarElement& ref)
 {
-    if (pXml->NoChildren())
+    if (xml->NoChildren())
         return;
 
-    for (auto ptr = pXml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
+    for (auto ptr = xml->FirstChildElement(); ptr; ptr = ptr->NextSiblingElement())
         FromXML(ptr, ref.Menus.emplace_back());
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, CheckboxElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, CheckboxElement& ref)
 {
-    GetStringAttrib(pXml, "label", ref.Label);
-    GetStringAttrib(pXml, "event", ref.Event);
-    GetStringAttrib(pXml, "default", ref.Default);
+    GetStringAttrib(xml, "label", ref.Label);
+    GetStringAttrib(xml, "event", ref.Event);
+    GetStringAttrib(xml, "default", ref.Default);
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, TextElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, TextElement& ref)
 {
-    const std::string type = pXml->Name();
+    const std::string type = xml->Name();
     const auto& func = TextElement::FUNCS[type];
 
     ref.Func = func;
-    ref.Text = pXml->GetText();
+    ref.Text = xml->GetText();
 }
 
-void guitar::FromXML(const tinyxml2::XMLElement* pXml, SimpleElement& ref)
+void guitar::FromXML(const tinyxml2::XMLElement* xml, SimpleElement& ref)
 {
-    const std::string type = pXml->Name();
+    const std::string type = xml->Name();
     const auto& func = SimpleElement::FUNCS[type];
 
     ref.Func = func;

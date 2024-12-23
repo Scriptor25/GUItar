@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 #include <tinyxml2.h>
 #include <guitar/events.hpp>
 #include <guitar/layout.hpp>
@@ -12,7 +13,7 @@ guitar::ResourceManager::ResourceManager(const std::filesystem::path& executable
 
 std::ifstream guitar::ResourceManager::Open(const std::string& name, const std::ios_base::openmode mode) const
 {
-    return std::ifstream(m_Root / name, std::ios_base::in | mode);
+    return std::move(std::ifstream(m_Root / name, std::ios_base::in | mode));
 }
 
 void guitar::ResourceManager::LoadAllImages()
@@ -28,15 +29,24 @@ void guitar::ResourceManager::Index()
 
 void guitar::ResourceManager::IndexDirectory(const std::filesystem::path& path)
 {
-    for (auto& entry : std::filesystem::directory_iterator(path))
-    {
-        if (entry.is_directory())
-        {
-            IndexDirectory(entry);
-            continue;
-        }
+    std::queue<std::filesystem::directory_iterator> next;
+    next.emplace(path);
 
-        IndexFile(entry);
+    while (!next.empty())
+    {
+        auto directory = next.front();
+        next.pop();
+
+        for (const auto& entry : directory)
+        {
+            if (entry.is_directory())
+            {
+                next.emplace(entry);
+                continue;
+            }
+
+            IndexFile(entry);
+        }
     }
 }
 
@@ -59,27 +69,27 @@ void guitar::ResourceManager::IndexFile(const std::filesystem::path& path)
     std::cerr << "[ResourceManager] Failed to index " << path << ": undefined xml type '" << type << "'" << std::endl;
 }
 
-void guitar::ResourceManager::ParseLayout(const tinyxml2::XMLElement* pXml)
+void guitar::ResourceManager::ParseLayout(const tinyxml2::XMLElement* xml)
 {
     Layout layout;
-    FromXML(pXml, layout);
+    FromXML(xml, layout);
     m_Layouts[layout.ID] = std::move(layout);
 }
 
-void guitar::ResourceManager::ParseApp(const tinyxml2::XMLElement* pXml)
+void guitar::ResourceManager::ParseApp(const tinyxml2::XMLElement* xml)
 {
     if (m_AppConfigured)
         std::cerr << "[ResourceManager] Warning: app already configured" << std::endl;
     m_AppConfigured = true;
-    FromXML(pXml, m_App);
+    FromXML(xml, m_App);
 }
 
-void guitar::ResourceManager::ParseImage(const tinyxml2::XMLElement* pXml)
+void guitar::ResourceManager::ParseImage(const tinyxml2::XMLElement* xml)
 {
     std::string id, src, type;
-    GetStringAttrib(pXml, "id", id);
-    GetStringAttrib(pXml, "src", src);
-    GetStringAttrib(pXml, "type", type); // TODO: differentiate between bitmap and vector images
+    GetStringAttrib(xml, "id", id);
+    GetStringAttrib(xml, "src", src);
+    GetStringAttrib(xml, "type", type);
 
     m_Images[id] = Image(src);
 }

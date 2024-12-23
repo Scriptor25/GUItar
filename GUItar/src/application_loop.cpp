@@ -113,7 +113,6 @@ void guitar::Application::Loop()
             task();
         m_Tasks.clear();
 
-        // Update Input Manager
         m_Input.Update(m_Handle);
 
         OnFrame();
