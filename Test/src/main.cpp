@@ -86,6 +86,11 @@ public:
     }
 
 protected:
+    void OnInit(guitar::AppConfig& config) override
+    {
+        config.Debug = true;
+    }
+
     void OnStart() override
     {
         constexpr unsigned pixels[]

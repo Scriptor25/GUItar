@@ -25,5 +25,6 @@ namespace guitar
         int Height = 0;
 
         bool Viewports = true;
+        bool Debug = false;
     };
 }
