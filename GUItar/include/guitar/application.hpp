@@ -62,7 +62,7 @@ namespace guitar
     class Application
     {
     public:
-        explicit Application(int argc, const char** ppArgv);
+        explicit Application(int argc, const char** argv);
         virtual ~Application() = default;
 
         /**

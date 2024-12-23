@@ -16,9 +16,9 @@ public:
             return true;
         });
 
-        Events().Register("img_test", this, [this](const guitar::EventBase* pEvent)
+        Events().Register("img_test", this, [this](const guitar::EventBase* event_ptr)
         {
-            auto& event = *dynamic_cast<const guitar::ImmutableEvent<guitar::ImagePayload>*>(pEvent);
+            auto& event = *dynamic_cast<const guitar::ImmutableEvent<guitar::ImagePayload>*>(event_ptr);
             event.Payload.Width = m_Image.Width;
             event.Payload.Height = m_Image.Height;
             event.Payload.TextureID = static_cast<ImTextureID>(m_Image.Texture);
@@ -31,9 +31,9 @@ public:
             return true;
         });
 
-        Events().Register("selected", this, [this](const guitar::EventBase* pEvent)
+        Events().Register("selected", this, [this](const guitar::EventBase* event_ptr)
         {
-            auto& event = *dynamic_cast<const guitar::MutableEvent<std::string>*>(pEvent);
+            auto& event = *dynamic_cast<const guitar::MutableEvent<std::string>*>(event_ptr);
             event.Payload = m_Items[m_Selected];
             return true;
         });
@@ -44,10 +44,10 @@ public:
             {
                 ImGui::PushID(i);
 
-                const bool selected = i == m_Selected;
-                if (ImGui::Selectable(m_Items[i].c_str(), selected))
+                const bool is_selected = i == m_Selected;
+                if (ImGui::Selectable(m_Items[i].c_str(), is_selected))
                     m_Selected = i;
-                if (selected)
+                if (is_selected)
                     ImGui::SetItemDefaultFocus();
 
                 ImGui::PopID();
@@ -56,18 +56,18 @@ public:
             return true;
         });
 
-        Events().Register("on_input_text", this, [this](const guitar::EventBase* pEvent)
+        Events().Register("on_input_text", this, [this](const guitar::EventBase* event_ptr)
         {
-            auto& event = *dynamic_cast<const guitar::ImmutableEvent<std::string>*>(pEvent);
+            auto& event = *dynamic_cast<const guitar::ImmutableEvent<std::string>*>(event_ptr);
             if (event.Payload.empty())
                 return false;
             std::cout << "Input: " << event.Payload << std::endl;
             return true;
         });
 
-        Events().Register("ABC", this, [](const guitar::EventBase* pEvent)
+        Events().Register("ABC", this, [](const guitar::EventBase* event_ptr)
         {
-            auto& event = *dynamic_cast<const guitar::MutableEvent<std::string>*>(pEvent);
+            auto& event = *dynamic_cast<const guitar::MutableEvent<std::string>*>(event_ptr);
             event.Payload = "Some default value.";
             return true;
         });
@@ -86,6 +86,11 @@ public:
     }
 
 protected:
+    void OnInit(guitar::AppConfig& config) override
+    {
+        config.Debug = true;
+    }
+
     void OnStart() override
     {
         constexpr unsigned pixels[]
@@ -102,14 +107,14 @@ protected:
         {
             if (ImPlot::BeginPlot("Test Plot", {-1, -1}))
             {
-                const auto [buttons, axes] = guitar::InputManager::GetGamepad(0, true);
+                const auto [buttons_, axes_] = guitar::InputManager::GetGamepad(0, true);
                 const float xs[]{
                     0.0f,
-                    axes[GLFW_GAMEPAD_AXIS_LEFT_X]
+                    axes_[GLFW_GAMEPAD_AXIS_LEFT_X]
                 };
                 const float ys[]{
                     0.0f,
-                    -axes[GLFW_GAMEPAD_AXIS_LEFT_Y]
+                    -axes_[GLFW_GAMEPAD_AXIS_LEFT_Y]
                 };
                 ImPlot::PlotLine("", xs, ys, 2);
                 ImPlot::EndPlot();

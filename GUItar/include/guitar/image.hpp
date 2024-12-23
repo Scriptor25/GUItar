@@ -9,7 +9,7 @@ namespace guitar
     struct Image
     {
         Image();
-        explicit Image(const std::string& filename);
+        explicit Image(std::string filename);
 
         ~Image();
 

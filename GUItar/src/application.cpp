@@ -1,7 +1,7 @@
 #include <guitar/application.hpp>
 
-guitar::Application::Application(const int /*argc*/, const char** ppArgv)
-    : m_Resources(ppArgv[0])
+guitar::Application::Application(const int /*argc*/, const char** argv)
+    : m_Resources(argv[0])
 {
 }
 
@@ -70,9 +70,9 @@ void guitar::Application::ToggleFullscreen()
         glfwSetWindowMonitor(
             m_Handle,
             nullptr,
-            m_State->X
-            , m_State->Y
-            , m_State->Width,
+            m_State->X,
+            m_State->Y,
+            m_State->Width,
             m_State->Height,
             GLFW_DONT_CARE);
 #ifdef _WIN32

@@ -15,8 +15,8 @@ namespace guitar
 
     struct KeyPayload
     {
-        int KeyCode;
-        int ScanCode;
+        int Key;
+        int Scancode;
         int Action;
         int Mods;
     };
@@ -30,17 +30,17 @@ namespace guitar
 
     struct EventBase
     {
-        explicit EventBase(const void* pSource);
+        explicit EventBase(const void* source);
         virtual ~EventBase();
 
-        const void* PSource;
+        const void* UserPtr;
     };
 
     template <typename T>
     struct ImmutableEvent : EventBase
     {
-        ImmutableEvent(const void* pSource, const T& payload)
-            : EventBase(pSource), Payload(payload)
+        ImmutableEvent(const void* user_ptr, const T& payload)
+            : EventBase(user_ptr), Payload(payload)
         {
         }
 
@@ -50,8 +50,8 @@ namespace guitar
     template <typename T>
     struct MutableEvent : EventBase
     {
-        MutableEvent(const void* pSource, T& payload)
-            : EventBase(pSource), Payload(payload)
+        MutableEvent(const void* user_ptr, T& payload)
+            : EventBase(user_ptr), Payload(payload)
         {
         }
 
@@ -76,27 +76,27 @@ namespace guitar
          * Manually invoke an event.
          *
          * @param id the action id
-         * @param pEvent a payload containing event information
+         * @param event_ptr a payload containing event information
          * @return if the event got captured by a listener
          */
-        bool Invoke(const std::string& id, const EventBase* pEvent);
+        bool Invoke(const std::string& id, const EventBase* event_ptr);
 
         /**
          * Register a listener for an action, owned by a pointer.
          *
          * @param id the action id
-         * @param pOwner the owners pointer
+         * @param user_ptr the owners pointer
          * @param listener the listener function
          */
-        void Register(const std::string& id, const void* pOwner, const EventListener& listener);
+        void Register(const std::string& id, const void* user_ptr, const EventListener& listener);
 
         /**
          * Release a listener.
          *
          * @param id the action id
-         * @param pOwner the owners pointer
+         * @param user_ptr the owners pointer
          */
-        void Release(const std::string& id, const void* pOwner);
+        void Release(const std::string& id, const void* user_ptr);
 
     private:
         std::map<std::string, std::map<const void*, EventListener>> m_Listeners;

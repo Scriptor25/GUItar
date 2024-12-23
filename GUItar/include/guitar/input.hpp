@@ -42,11 +42,10 @@ namespace guitar
         void CreateAxis(const std::string& id, const std::vector<AxisConfig>& config);
         float GetAxis(int jid, const std::string& id);
 
-        void Update(GLFWwindow* pWindow);
+        void Update(GLFWwindow* window);
 
     private:
         std::map<int, KeyState> m_Keys;
-
         std::map<std::string, std::vector<AxisConfig>> m_Axes;
     };
 }
